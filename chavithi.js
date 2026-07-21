@@ -363,3 +363,4 @@ const { error } = await window.supabaseClient
         }
     }
 })();
+
