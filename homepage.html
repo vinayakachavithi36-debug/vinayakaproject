@@ -1,0 +1,6094 @@
+<!DOCTYPE html>
+<html lang="te">
+<head>
+<meta charset="UTF-8">
+
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+<title>శ్రీ వరసిద్ధి వినాయక ఉత్సవ కమిటీ</title>
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Telugu:wght@700;800;900&display=swap');
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+html,
+body{
+    width:100%;
+    min-height:100%;
+    overflow-x:hidden;
+    overflow-y:auto;
+    background:#ffffff;
+    font-family:'Noto Sans Telugu', Arial, sans-serif;
+    -webkit-overflow-scrolling:touch;
+}
+
+button,
+a,
+input,
+select,
+textarea{
+    font:inherit;
+}
+
+button{
+    cursor:pointer;
+}
+
+.home-page{
+    position:relative;
+    width:100%;
+    min-height:100vh;
+    overflow:visible;
+}
+.home-background{
+    position:absolute;
+    inset:0;
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    object-position:center;
+}
+
+.home-overlay{
+    position:fixed;
+    inset:0;
+    z-index:1;
+    background:rgba(0,0,0,.10);
+    pointer-events:none;
+}
+
+/* ADD BUTTON */
+.add-btn{
+    position:fixed;
+
+    top:max(
+        28px,
+        calc(env(safe-area-inset-top) + 20px)
+    );
+
+    right:max(
+        16px,
+        calc(env(safe-area-inset-right) + 12px)
+    );
+
+    z-index:20;
+
+    padding:7px 14px;
+
+    background:transparent;
+    border:1.5px solid #ffffff;
+    border-radius:5px;
+
+    color:#ffffff;
+    font-family:Arial, sans-serif;
+    font-size:16px;
+    font-weight:700;
+    line-height:1;
+
+    -webkit-tap-highlight-color:transparent;
+}
+
+.add-btn:active{
+    transform:scale(.94);
+}
+
+/* HOME TITLE */
+.home-title{
+    position:absolute;
+    top:20%;
+    left:50%;
+    z-index:2;
+
+    width:calc(100% - 30px);
+
+    transform:translate(-50%, -50%);
+
+    color:#ffd700;
+
+    font-family:'Noto Sans Telugu', sans-serif;
+    font-size:48px;
+    font-weight:900;
+    line-height:1.35;
+    text-align:center;
+
+    text-shadow:
+        0 4px 7px rgba(0,0,0,1),
+        0 0 14px rgba(0,0,0,.95),
+        0 0 20px rgba(255,215,0,.95),
+        0 0 35px rgba(255,153,0,.70);
+
+    pointer-events:none;
+}
+
+.home-title span{
+    display:block;
+}
+
+.home-title span:last-child{
+    margin-top:3px;
+    font-size:44px;
+}
+
+
+/* DARK BACKDROP */
+.sheet-backdrop{
+    position:fixed;
+    inset:0;
+    z-index:100;
+
+    background:rgba(0,0,0,.45);
+
+    opacity:0;
+    visibility:hidden;
+    pointer-events:none;
+
+    transition:
+        opacity .25s ease,
+        visibility .25s ease;
+}
+
+.sheet-backdrop.show{
+    opacity:1;
+    visibility:visible;
+    pointer-events:auto;
+}
+
+/* COMMON BOTTOM SHEET */
+.bottom-sheet{
+    position:fixed;
+    left:0;
+    bottom:0;
+    z-index:101;
+
+    width:100vw;
+    max-width:none;
+    min-height:180px;
+
+    max-height:calc(
+        100vh - env(safe-area-inset-top) - 8px
+    );
+
+    max-height:calc(
+        100dvh - env(safe-area-inset-top) - 8px
+    );
+
+    padding-top:55px;
+
+    padding-right:max(
+        18px,
+        calc(env(safe-area-inset-right) + 12px)
+    );
+
+    padding-bottom:calc(
+        25px + env(safe-area-inset-bottom)
+    );
+
+    padding-left:max(
+        18px,
+        calc(env(safe-area-inset-left) + 12px)
+    );
+
+    background:#ffffff;
+    color:#000000;
+
+    border-radius:22px 22px 0 0;
+
+    overflow-x:hidden;
+    overflow-y:auto;
+
+    overscroll-behavior:contain;
+    -webkit-overflow-scrolling:touch;
+
+    transform:translateY(105%);
+    visibility:hidden;
+    pointer-events:none;
+
+    transition:
+        transform .28s ease,
+        visibility .28s ease;
+}
+
+.bottom-sheet.show{
+    transform:translateY(0);
+    visibility:visible;
+    pointer-events:auto;
+}
+
+/* CLOSE BUTTON */
+.close-sheet{
+    position:absolute;
+    top:12px;
+
+    right:max(
+        16px,
+        calc(env(safe-area-inset-right) + 12px)
+    );
+
+    width:36px;
+    height:36px;
+    padding:0;
+
+    background:transparent;
+    border:none;
+
+    color:#000000;
+    font-family:Arial, sans-serif;
+    font-size:34px;
+    font-weight:400;
+    line-height:36px;
+}
+
+/* SHEET CONTENT */
+.sheet-content{
+    width:100%;
+    max-width:none;
+    margin:0;
+
+    font-family:Arial, sans-serif;
+}
+
+.sheet-content h2{
+    width:100%;
+    margin-bottom:18px;
+
+    font-size:21px;
+    font-weight:700;
+    text-align:center;
+}
+
+/* MENU */
+.sheet-menu{
+    display:flex;
+    flex-direction:column;
+
+    width:100%;
+    border-top:1px solid #cccccc;
+}
+
+.sheet-link{
+    display:block;
+    width:100%;
+
+    padding:15px 5px;
+
+    background:transparent;
+    border:none;
+    border-bottom:1px solid #cccccc;
+    border-radius:0;
+
+    color:#000000;
+
+    font-family:Arial, sans-serif;
+    font-size:16px;
+    font-weight:500;
+    text-align:center;
+    text-decoration:none;
+
+    -webkit-tap-highlight-color:transparent;
+}
+
+.sheet-link:active{
+    background:#f5f5f5;
+}
+
+/* FORM */
+.data-form{
+    width:100%;
+    padding-bottom:20px;
+}
+
+.form-group{
+    width:100%;
+    margin-bottom:17px;
+}
+
+.form-group label{
+    display:block;
+    width:100%;
+    margin-bottom:7px;
+
+    color:#222222;
+
+    font-family:Arial, sans-serif;
+    font-size:14px;
+    font-weight:600;
+    text-align:left;
+}
+
+.form-control{
+    display:block;
+
+    width:100%;
+    min-width:0;
+
+    padding:11px 3px;
+
+    background:transparent;
+    border:none;
+    border-bottom:1px solid #999999;
+    border-radius:0;
+    outline:none;
+
+    color:#000000;
+
+    font-family:Arial, sans-serif;
+    font-size:16px;
+}
+
+.form-control:focus{
+    border-bottom-color:#000000;
+}
+
+.form-control[readonly]{
+    color:#555555;
+}
+
+select.form-control{
+    cursor:pointer;
+    appearance:auto;
+    -webkit-appearance:auto;
+}
+
+textarea.form-control{
+    min-height:75px;
+    resize:vertical;
+}
+
+/* PHONEPE SCANNER */
+.phonepe-scanner{
+    display:none;
+    width:100%;
+
+    margin-top:20px;
+    text-align:center;
+}
+
+.phonepe-scanner.show{
+    display:block;
+}
+
+.phonepe-scanner p{
+    margin-bottom:10px;
+
+    font-family:Arial, sans-serif;
+    font-size:15px;
+    font-weight:600;
+}
+
+.phonepe-scanner img{
+    display:block;
+
+    width:220px;
+    max-width:80%;
+    height:auto;
+
+    margin:0 auto;
+
+    object-fit:contain;
+}
+
+.scanner-error{
+    margin-top:10px;
+    color:#c00000;
+    font-size:13px;
+}
+
+/* PAYMENT PROOF */
+.payment-proof-input{
+    display:block;
+    width:100%;
+
+    padding:10px 3px;
+
+    background:transparent;
+    border:none;
+    border-bottom:1px solid #999999;
+
+    color:#000000;
+    font-family:Arial, sans-serif;
+    font-size:14px;
+}
+
+.payment-proof-input::file-selector-button{
+    margin-right:12px;
+    padding:8px 12px;
+
+    background:#ffffff;
+    border:1px solid #000000;
+    border-radius:4px;
+
+    color:#000000;
+    font-weight:600;
+}
+
+.proof-preview{
+    display:none;
+    width:100%;
+
+    margin-top:15px;
+    text-align:center;
+}
+
+.proof-preview.show{
+    display:block;
+}
+
+.proof-preview img{
+    display:block;
+
+    width:220px;
+    max-width:85%;
+    max-height:240px;
+
+    margin:0 auto 10px;
+
+    object-fit:contain;
+}
+
+.proof-file-name{
+    font-size:13px;
+    word-break:break-word;
+}
+
+/* SAVE BUTTON */
+.save-btn{
+    display:block;
+    width:100%;
+
+    margin-top:25px;
+    padding:13px 16px;
+
+    background:#000000;
+    border:1px solid #000000;
+    border-radius:5px;
+
+    color:#ffffff;
+
+    font-family:Arial, sans-serif;
+    font-size:16px;
+    font-weight:700;
+}
+
+.save-btn:active{
+    transform:scale(.98);
+}
+
+.form-message{
+    min-height:22px;
+    margin-top:12px;
+
+    font-family:Arial, sans-serif;
+    font-size:14px;
+    font-weight:600;
+    text-align:center;
+}
+
+
+/* SOFT LIGHT-YELLOW THEME FOR SERVICE / DONATION / EXPENSE SHEETS */
+#menuSheet,
+#donationSheet,
+#expenseSheet{
+    background:#fffbea;
+}
+
+#menuSheet .sheet-content,
+#donationSheet .sheet-content,
+#expenseSheet .sheet-content{
+    background:transparent;
+}
+
+#menuSheet .sheet-link{
+    background:rgba(255,255,255,.48);
+}
+
+#menuSheet .sheet-link:active{
+    background:#fff3bd;
+}
+
+#donationSheet .form-control,
+#expenseSheet .form-control,
+#donationSheet .payment-proof-input,
+#expenseSheet .payment-proof-input{
+    background:rgba(255,255,255,.22);
+}
+
+#donationSheet .save-btn,
+#expenseSheet .save-btn{
+    background:#d4a900;
+    border-color:#d4a900;
+    color:#ffffff;
+}
+
+/* CLEAN BLUE UPLOAD IMAGE SHEET */
+#uploadImageSheet{
+    left:50%;
+    bottom:12px;
+
+    width:calc(100vw - 24px);
+    max-width:680px;
+    min-height:0;
+
+    max-height:calc(
+        100vh - 24px - env(safe-area-inset-top)
+    );
+
+    max-height:calc(
+        100dvh - 24px - env(safe-area-inset-top)
+    );
+
+    padding:22px;
+    padding-bottom:calc(
+        22px + env(safe-area-inset-bottom)
+    );
+
+    background:#f8fafc;
+    border:1px solid #dbe3ec;
+    border-radius:26px;
+
+    box-shadow:
+        0 24px 60px rgba(15,23,42,.28),
+        0 6px 18px rgba(15,23,42,.10);
+
+    transform:translate(-50%, calc(100% + 40px));
+}
+
+#uploadImageSheet.show{
+    transform:translate(-50%, 0);
+}
+
+#uploadImageSheet .close-sheet{
+    top:14px;
+    right:14px;
+
+    width:38px;
+    height:38px;
+
+    background:#ffffff;
+    border:1px solid #d6dee8;
+    border-radius:50%;
+
+    color:#334155;
+    font-size:27px;
+    line-height:34px;
+
+    box-shadow:0 5px 14px rgba(15,23,42,.10);
+}
+
+#uploadImageSheet .sheet-content{
+    width:100%;
+    max-width:580px;
+    margin:0 auto;
+}
+
+.upload-sheet-heading{
+    padding:2px 46px 18px;
+    text-align:center;
+}
+
+.upload-sheet-heading h2{
+    margin:0 0 7px;
+
+    color:#172033;
+    font-family:Arial,sans-serif;
+    font-size:24px;
+    font-weight:800;
+}
+
+.upload-sheet-heading p{
+    color:#64748b;
+    font-family:Arial,sans-serif;
+    font-size:14px;
+    line-height:1.5;
+}
+
+.upload-image-area{
+    width:100%;
+    text-align:center;
+}
+
+.image-file-input{
+    display:none;
+}
+
+/* IMAGE SELECTION AREA */
+.choose-image-btn{
+    display:flex;
+    width:100%;
+    min-height:125px;
+
+    padding:22px 16px;
+
+    align-items:center;
+    justify-content:center;
+    flex-direction:column;
+    gap:10px;
+
+    background:#ffffff;
+    border:2px dashed #7aa7e8;
+    border-radius:22px;
+
+    color:#1e3a5f;
+    text-align:center;
+
+    box-shadow:
+        inset 0 0 0 5px rgba(96,165,250,.05),
+        0 9px 24px rgba(15,23,42,.07);
+
+    cursor:pointer;
+    transition:
+        transform .2s ease,
+        border-color .2s ease,
+        background .2s ease;
+}
+
+.choose-image-btn:hover{
+    background:#f8fbff;
+    border-color:#3b82f6;
+    transform:translateY(-2px);
+}
+
+.choose-image-btn:active{
+    transform:scale(.99);
+}
+
+.upload-drop-title{
+    color:#172033;
+    font-family:Arial,sans-serif;
+    font-size:17px;
+    font-weight:800;
+}
+
+.upload-drop-subtitle{
+    color:#64748b;
+    font-family:Arial,sans-serif;
+    font-size:12px;
+    line-height:1.45;
+}
+
+/* SELECTED IMAGE CARD */
+.upload-preview{
+    display:none;
+    width:100%;
+
+    margin-top:17px;
+    padding:12px;
+
+    background:#ffffff;
+    border:1px solid #dbe3ec;
+    border-radius:20px;
+
+    text-align:left;
+    box-shadow:0 10px 26px rgba(15,23,42,.08);
+}
+
+.upload-preview.show{
+    display:block;
+}
+
+.preview-image-box{
+    display:flex;
+    width:100%;
+    min-height:180px;
+    max-height:285px;
+
+    align-items:center;
+    justify-content:center;
+
+    overflow:hidden;
+    background:#eef3f8;
+    border-radius:15px;
+}
+
+.upload-preview img{
+    display:block;
+
+    width:auto;
+    max-width:100%;
+    max-height:285px;
+
+    margin:0;
+    object-fit:contain;
+}
+
+.preview-file-info{
+    display:flex;
+    width:100%;
+
+    margin-top:11px;
+    padding:2px 3px;
+
+    align-items:flex-start;
+    gap:10px;
+}
+
+.preview-file-badge{
+    flex-shrink:0;
+
+    padding:5px 8px;
+
+    background:#eaf2ff;
+    border:1px solid #b8d2fb;
+    border-radius:8px;
+
+    color:#2458a8;
+    font-family:Arial,sans-serif;
+    font-size:11px;
+    font-weight:800;
+}
+
+.upload-file-name{
+    flex:1;
+    min-width:0;
+
+    margin:2px 0 0;
+
+    color:#334155;
+    font-family:Arial,sans-serif;
+    font-size:13px;
+    font-weight:700;
+    line-height:1.45;
+    word-break:break-word;
+}
+
+/* ACTION BUTTONS */
+.upload-actions{
+    display:flex;
+    width:100%;
+
+    gap:11px;
+    margin-top:17px;
+}
+
+.upload-action-btn{
+    display:flex;
+    flex:1;
+    min-height:48px;
+
+    padding:12px 10px;
+
+    align-items:center;
+    justify-content:center;
+
+    border-radius:14px;
+
+    font-family:Arial,sans-serif;
+    font-size:15px;
+    font-weight:800;
+
+    transition:
+        transform .18s ease,
+        box-shadow .18s ease,
+        opacity .18s ease;
+}
+
+.upload-action-btn:active{
+    transform:scale(.98);
+}
+
+.upload-image-btn{
+    background:#2563eb;
+    border:1px solid #1d4ed8;
+    color:#ffffff;
+    box-shadow:0 10px 20px rgba(37,99,235,.20);
+}
+
+.upload-image-btn:disabled{
+    opacity:.42;
+    box-shadow:none;
+    cursor:not-allowed;
+}
+
+.cancel-image-btn{
+    background:#ffffff;
+    border:1px solid #cbd5e1;
+    color:#334155;
+}
+
+/* LOADING AND SUCCESS PANEL */
+.upload-status{
+    display:none;
+    width:100%;
+    min-height:170px;
+
+    margin-top:17px;
+    padding:24px 18px;
+
+    align-items:center;
+    justify-content:center;
+    flex-direction:column;
+
+    background:#ffffff;
+    border:1px solid #dbe3ec;
+    border-radius:22px;
+
+    text-align:center;
+    box-shadow:0 12px 28px rgba(15,23,42,.08);
+}
+
+.upload-status.show{
+    display:flex;
+}
+
+.upload-loader{
+    display:none;
+    width:54px;
+    height:54px;
+
+    border:5px solid #dbeafe;
+    border-top-color:#2563eb;
+    border-radius:50%;
+
+    animation:uploadSpin .75s linear infinite;
+}
+
+.upload-loader.show{
+    display:block;
+}
+
+@keyframes uploadSpin{
+    to{
+        transform:rotate(360deg);
+    }
+}
+
+.upload-status-text{
+    margin-top:15px;
+
+    color:#172033;
+
+    font-family:Arial,sans-serif;
+    font-size:16px;
+    font-weight:800;
+}
+
+/* SUCCESS TICK */
+.upload-success{
+    display:none;
+    width:78px;
+    height:78px;
+
+    align-items:center;
+    justify-content:center;
+
+    background:#16a34a;
+    border:6px solid #dcfce7;
+    border-radius:50%;
+
+    color:#ffffff;
+
+    font-family:Arial,sans-serif;
+    font-size:45px;
+    font-weight:800;
+    line-height:1;
+
+    box-shadow:0 13px 28px rgba(22,163,74,.22);
+}
+
+.upload-success.show{
+    display:flex;
+}
+
+/* Filename is not shown after successful upload */
+.uploaded-image-name,
+.uploaded-image-name.show{
+    display:none !important;
+}
+
+@media(max-width:768px){
+    #uploadImageSheet{
+        bottom:8px;
+
+        width:calc(100vw - 16px);
+
+        padding:18px 14px;
+        padding-bottom:calc(
+            18px + env(safe-area-inset-bottom)
+        );
+
+        border-radius:24px;
+    }
+
+    .upload-sheet-heading{
+        padding:3px 38px 15px;
+    }
+
+    .upload-sheet-heading h2{
+        font-size:21px;
+    }
+
+    .choose-image-btn{
+        min-height:112px;
+        padding:18px 12px;
+        border-radius:19px;
+    }
+
+    .preview-image-box{
+        min-height:150px;
+        max-height:245px;
+    }
+
+    .upload-preview img{
+        max-height:245px;
+    }
+
+    .upload-status{
+        min-height:170px;
+    }
+}
+
+@media(max-width:380px){
+    #uploadImageSheet{
+        width:calc(100vw - 12px);
+        bottom:6px;
+
+        padding-right:11px;
+        padding-left:11px;
+
+        border-radius:22px;
+    }
+
+    .upload-sheet-heading h2{
+        font-size:20px;
+    }
+
+    .upload-sheet-heading p{
+        font-size:12px;
+    }
+
+    .upload-actions{
+        gap:8px;
+    }
+
+    .upload-action-btn{
+        min-height:45px;
+        padding:10px 6px;
+        font-size:13px;
+    }
+}
+
+/* TABLET */
+@media(max-width:900px){
+    .home-title{
+        font-size:38px;
+    }
+
+    .home-title span:last-child{
+        font-size:40px;
+    }
+}
+
+/* MOBILE */
+@media(max-width:768px){
+    .add-btn{
+        top:max(
+            36px,
+            calc(env(safe-area-inset-top) + 18px)
+        );
+
+        right:max(
+            25px,
+            calc(env(safe-area-inset-right) + 10px)
+        );
+
+        padding:7px 12px;
+        font-size:15px;
+    }
+
+    .home-title{
+        width:calc(100% - 20px);
+
+        font-size:30px;
+        line-height:1.45;
+    }
+
+    .home-title span:last-child{
+        font-size:32px;
+    }
+
+    .bottom-sheet{
+        max-height:calc(
+            100dvh - env(safe-area-inset-top) - 6px
+        );
+
+        padding-top:55px;
+
+        padding-right:max(
+            14px,
+            calc(env(safe-area-inset-right) + 10px)
+        );
+
+        padding-bottom:calc(
+            25px + env(safe-area-inset-bottom)
+        );
+
+        padding-left:max(
+            14px,
+            calc(env(safe-area-inset-left) + 10px)
+        );
+
+        border-radius:20px 20px 0 0;
+    }
+
+    .sheet-link{
+        padding:15px 3px;
+        font-size:15px;
+    }
+
+    .phonepe-scanner img,
+    .proof-preview img{
+        width:200px;
+    }
+
+    .upload-preview img{
+        max-height:260px;
+    }
+}
+
+/* SMALL MOBILE */
+@media(max-width:380px){
+    .add-btn{
+        top:max(
+            36px,
+            calc(env(safe-area-inset-top) + 16px)
+        );
+
+        right:max(
+            18px,
+            calc(env(safe-area-inset-right) + 8px)
+        );
+
+        padding:6px 11px;
+        font-size:14px;
+    }
+
+    .home-title{
+        font-size:26px;
+    }
+
+    .home-title span:last-child{
+        font-size:28px;
+    }
+
+    .bottom-sheet{
+        padding-right:12px;
+        padding-left:12px;
+
+        border-radius:18px 18px 0 0;
+    }
+
+    .sheet-content h2{
+        font-size:19px;
+    }
+
+    .upload-actions{
+        gap:8px;
+    }
+
+    .upload-action-btn{
+        padding:11px 6px;
+        font-size:14px;
+    }
+}
+
+/* PC */
+@media(min-width:769px){
+    .bottom-sheet{
+        padding-right:32px;
+        padding-left:32px;
+    }
+}
+
+/* LARGE PC */
+@media(min-width:1200px){
+    .bottom-sheet{
+        padding-right:50px;
+        padding-left:50px;
+    }
+
+    .sheet-content h2{
+        font-size:23px;
+    }
+
+    .form-control{
+        font-size:17px;
+    }
+}
+
+
+/* PDF UPLOAD BOTTOM SHEET - SAME FLOW AS IMAGE UPLOAD */
+#uploadPdfSheet{
+    left:50%;
+    bottom:12px;
+
+    width:calc(100vw - 24px);
+    max-width:680px;
+    min-height:0;
+
+    max-height:calc(
+        100vh - 24px - env(safe-area-inset-top)
+    );
+
+    max-height:calc(
+        100dvh - 24px - env(safe-area-inset-top)
+    );
+
+    padding:22px;
+    padding-bottom:calc(
+        22px + env(safe-area-inset-bottom)
+    );
+
+    background:#f8fafc;
+    border:1px solid #dbe3ec;
+    border-radius:26px;
+
+    box-shadow:
+        0 24px 60px rgba(15,23,42,.28),
+        0 6px 18px rgba(15,23,42,.10);
+
+    transform:translate(-50%, calc(100% + 40px));
+}
+
+#uploadPdfSheet.show{
+    transform:translate(-50%, 0);
+}
+
+#uploadPdfSheet .close-sheet{
+    top:14px;
+    right:14px;
+
+    width:38px;
+    height:38px;
+
+    background:#ffffff;
+    border:1px solid #d6dee8;
+    border-radius:50%;
+
+    color:#334155;
+    font-size:27px;
+    line-height:34px;
+
+    box-shadow:0 5px 14px rgba(15,23,42,.10);
+}
+
+#uploadPdfSheet .sheet-content{
+    width:100%;
+    max-width:580px;
+    margin:0 auto;
+}
+
+.pdf-preview{
+    display:none;
+    width:100%;
+
+    margin-top:17px;
+    padding:14px;
+
+    background:#ffffff;
+    border:1px solid #dbe3ec;
+    border-radius:20px;
+
+    text-align:left;
+    box-shadow:0 10px 26px rgba(15,23,42,.08);
+}
+
+.pdf-preview.show{
+    display:block;
+}
+
+.pdf-preview-card{
+    display:flex;
+    width:100%;
+    min-height:86px;
+
+    padding:16px;
+
+    align-items:center;
+    gap:13px;
+
+    background:#eef3f8;
+    border-radius:15px;
+}
+
+.pdf-file-badge{
+    flex-shrink:0;
+
+    padding:8px 11px;
+
+    background:#eaf2ff;
+    border:1px solid #b8d2fb;
+    border-radius:10px;
+
+    color:#2458a8;
+    font-family:Arial,sans-serif;
+    font-size:12px;
+    font-weight:800;
+}
+
+.pdf-file-name{
+    flex:1;
+    min-width:0;
+
+    color:#334155;
+    font-family:Arial,sans-serif;
+    font-size:14px;
+    font-weight:700;
+    line-height:1.45;
+    word-break:break-word;
+}
+
+@media(max-width:768px){
+    #uploadPdfSheet{
+        bottom:8px;
+
+        width:calc(100vw - 16px);
+
+        padding:18px 14px;
+        padding-bottom:calc(
+            18px + env(safe-area-inset-bottom)
+        );
+
+        border-radius:24px;
+    }
+}
+
+@media(max-width:380px){
+    #uploadPdfSheet{
+        width:calc(100vw - 12px);
+        bottom:6px;
+
+        padding-right:11px;
+        padding-left:11px;
+
+        border-radius:22px;
+    }
+}
+
+
+/* =========================================================
+   CLEAN LOGOUT CONFIRMATION
+========================================================= */
+
+#logoutSheet{
+    left:50%;
+    bottom:12px;
+
+    width:calc(100vw - 24px);
+    max-width:440px;
+    min-height:0;
+
+    padding:56px 18px 20px;
+    padding-bottom:calc(
+        20px + env(safe-area-inset-bottom)
+    );
+
+    background:#ffffff;
+    border:1px solid #eeeeee;
+    border-radius:26px;
+
+    box-shadow:
+        0 24px 65px rgba(0,0,0,.28),
+        0 8px 22px rgba(0,0,0,.10);
+
+    overflow:hidden;
+
+    transform:translate(
+        -50%,
+        calc(100% + 40px)
+    );
+}
+
+#logoutSheet.show{
+    transform:translate(-50%,0);
+}
+
+
+/* CLOSE BUTTON */
+
+#logoutSheet .close-sheet{
+    top:14px;
+    right:14px;
+
+    width:38px;
+    height:38px;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    padding:0;
+
+    background:#f5f5f5;
+    border:none;
+    border-radius:50%;
+
+    color:#555555;
+    font-size:25px;
+    line-height:1;
+
+    box-shadow:none;
+}
+
+#logoutSheet .close-sheet:active{
+    background:#eeeeee;
+    transform:scale(.92);
+}
+
+
+/* CONTENT */
+
+.logout-confirm-content{
+    width:100%;
+    margin:0;
+    padding:0;
+
+    background:transparent;
+    border:none;
+    border-radius:0;
+
+    text-align:center;
+    box-shadow:none;
+}
+
+
+/* LOGOUT ICON */
+
+.logout-confirm-content::before{
+    content:"\f2f5";
+
+    display:flex;
+    width:72px;
+    height:72px;
+
+    margin:0 auto 18px;
+
+    align-items:center;
+    justify-content:center;
+
+    background:#fff0f0;
+    border:1px solid #ffd5d5;
+    border-radius:50%;
+
+    color:#e53935;
+
+    font-family:"Font Awesome 6 Free";
+    font-size:30px;
+    font-weight:900;
+
+    box-shadow:
+        0 10px 24px rgba(229,57,53,.14);
+}
+
+
+/* TITLE */
+
+.logout-confirm-content h2{
+    margin:0 0 8px;
+
+    color:#222222;
+
+    font-family:Arial,sans-serif;
+    font-size:23px;
+    font-weight:800;
+    line-height:1.35;
+}
+
+
+/* MESSAGE */
+
+.logout-confirm-content p{
+    max-width:320px;
+    margin:0 auto;
+
+    color:#777777;
+
+    font-family:Arial,sans-serif;
+    font-size:14px;
+    font-weight:500;
+    line-height:1.55;
+}
+
+
+/* BUTTONS */
+
+.logout-actions{
+    display:flex;
+    width:100%;
+
+    gap:10px;
+    margin-top:25px;
+}
+
+.logout-choice-btn{
+    flex:1;
+    min-height:49px;
+
+    padding:12px 14px;
+
+    border-radius:13px;
+
+    font-family:Arial,sans-serif;
+    font-size:15px;
+    font-weight:800;
+
+    transition:
+        transform .18s ease,
+        background .18s ease,
+        box-shadow .18s ease;
+}
+
+
+/* CANCEL */
+
+.logout-no-btn{
+    background:#f5f5f5;
+    border:1px solid #e5e5e5;
+
+    color:#444444;
+}
+
+.logout-no-btn:active{
+    background:#eaeaea;
+}
+
+
+/* LOGOUT */
+
+.logout-yes-btn{
+    background:#e53935;
+    border:1px solid #d32f2f;
+
+    color:#ffffff;
+
+    box-shadow:
+        0 9px 20px rgba(229,57,53,.24);
+}
+
+.logout-yes-btn:active{
+    background:#c62828;
+}
+
+
+/* BUTTON PRESS */
+
+.logout-choice-btn:active{
+    transform:scale(.97);
+}
+
+
+/* MOBILE */
+
+@media(max-width:768px){
+
+    #logoutSheet{
+        bottom:8px;
+
+        width:calc(100vw - 16px);
+
+        padding:54px 16px 18px;
+        padding-bottom:calc(
+            18px + env(safe-area-inset-bottom)
+        );
+
+        border-radius:24px;
+    }
+
+    .logout-confirm-content::before{
+        width:66px;
+        height:66px;
+
+        margin-bottom:16px;
+
+        font-size:27px;
+    }
+
+    .logout-confirm-content h2{
+        font-size:21px;
+    }
+}
+
+
+/* SMALL MOBILE */
+
+@media(max-width:380px){
+
+    #logoutSheet{
+        bottom:6px;
+        width:calc(100vw - 12px);
+
+        padding-right:13px;
+        padding-left:13px;
+    }
+
+    .logout-actions{
+        gap:8px;
+    }
+
+    .logout-choice-btn{
+        min-height:46px;
+        padding:11px 8px;
+
+        font-size:14px;
+    }
+}
+/* ADMIN-ONLY CONTROLS
+   Hidden by default. They appear only when loginRole is exactly "admin". */
+html:not(.admin-mode) .add-btn,
+html:not(.admin-mode) .sheet-backdrop,
+html:not(.admin-mode) .bottom-sheet{
+    display:none !important;
+}
+
+
+/* =========================================================
+   CLEAN HOMEPAGE-MATCHING THEME
+   Applies to service, donation and expense bottom sheets
+========================================================= */
+
+#menuSheet,
+#donationSheet,
+#expenseSheet{
+    background:
+        linear-gradient(
+            180deg,
+            #fffdf3 0%,
+            #fff8d7 52%,
+            #fff3bd 100%
+        );
+    border-top:1px solid rgba(255,215,0,.72);
+    box-shadow:
+        0 -18px 55px rgba(0,0,0,.24),
+        inset 0 1px 0 rgba(255,255,255,.9);
+}
+
+/* Decorative gold line */
+#menuSheet::before,
+#donationSheet::before,
+#expenseSheet::before{
+    content:"";
+    position:absolute;
+    top:0;
+    left:50%;
+    width:76px;
+    height:5px;
+    border-radius:0 0 999px 999px;
+    background:linear-gradient(90deg,#ffb300,#ffd700,#ffb300);
+    transform:translateX(-50%);
+    box-shadow:0 3px 12px rgba(255,179,0,.35);
+}
+
+/* Close button */
+#menuSheet .close-sheet,
+#donationSheet .close-sheet,
+#expenseSheet .close-sheet{
+    top:14px;
+    right:16px;
+    width:38px;
+    height:38px;
+    border:1px solid rgba(176,125,0,.18);
+    border-radius:50%;
+    background:rgba(255,255,255,.86);
+    color:#7a5200;
+    font-size:28px;
+    line-height:34px;
+    box-shadow:0 6px 16px rgba(84,55,0,.10);
+    transition:
+        transform .18s ease,
+        background .18s ease;
+}
+
+#menuSheet .close-sheet:active,
+#donationSheet .close-sheet:active,
+#expenseSheet .close-sheet:active{
+    transform:scale(.92);
+    background:#fff3bd;
+}
+
+/* Headings */
+#menuSheet .sheet-content h2,
+#donationSheet .sheet-content h2,
+#expenseSheet .sheet-content h2{
+    margin-bottom:20px;
+    color:#593900;
+    font-family:Arial,sans-serif;
+    font-size:22px;
+    font-weight:900;
+    letter-spacing:.1px;
+}
+
+/* SERVICE MENU */
+#menuSheet .sheet-menu{
+    gap:10px;
+    border-top:none;
+}
+
+#menuSheet .sheet-link{
+    position:relative;
+    display:flex;
+    min-height:54px;
+    padding:14px 18px;
+    align-items:center;
+    justify-content:center;
+
+    background:rgba(255,255,255,.88);
+    border:1px solid rgba(177,126,0,.16);
+    border-radius:15px;
+
+    color:#4d3400;
+    font-family:Arial,sans-serif;
+    font-size:15px;
+    font-weight:700;
+    text-align:center;
+
+    box-shadow:
+        0 8px 20px rgba(112,72,0,.08),
+        inset 0 1px 0 rgba(255,255,255,.92);
+
+    transition:
+        transform .18s ease,
+        background .18s ease,
+        border-color .18s ease,
+        box-shadow .18s ease;
+}
+
+#menuSheet .sheet-link::after{
+    content:"›";
+    position:absolute;
+    right:16px;
+    color:#c28b00;
+    font-size:24px;
+    font-weight:400;
+    line-height:1;
+}
+
+#menuSheet .sheet-link:hover{
+    background:#fffdf8;
+    border-color:rgba(211,154,0,.30);
+    transform:translateY(-1px);
+    box-shadow:0 11px 25px rgba(112,72,0,.11);
+}
+
+#menuSheet .sheet-link:active{
+    background:#ffe999;
+    transform:scale(.985);
+}
+
+/* Forms */
+#donationSheet .data-form,
+#expenseSheet .data-form{
+    padding:4px 2px 24px;
+}
+
+#donationSheet .form-group,
+#expenseSheet .form-group{
+    margin-bottom:15px;
+}
+
+#donationSheet .form-group label,
+#expenseSheet .form-group label{
+    margin-bottom:7px;
+    color:#5f4307;
+    font-size:13px;
+    font-weight:800;
+}
+
+#donationSheet .form-control,
+#expenseSheet .form-control,
+#donationSheet .payment-proof-input,
+#expenseSheet .payment-proof-input{
+    width:100%;
+    min-height:48px;
+    padding:12px 14px;
+
+    background:rgba(255,255,255,.90);
+    border:1px solid rgba(171,121,0,.20);
+    border-radius:12px;
+
+    color:#2f2308;
+    font-size:15px;
+
+    box-shadow:
+        inset 0 1px 0 rgba(255,255,255,.92),
+        0 5px 14px rgba(101,67,0,.05);
+
+    transition:
+        border-color .18s ease,
+        box-shadow .18s ease,
+        background .18s ease;
+}
+
+#donationSheet textarea.form-control,
+#expenseSheet textarea.form-control{
+    min-height:92px;
+    line-height:1.5;
+}
+
+#donationSheet .form-control:focus,
+#expenseSheet .form-control:focus,
+#donationSheet .payment-proof-input:focus,
+#expenseSheet .payment-proof-input:focus{
+    background:#ffffff;
+    border-color:#e3aa00;
+    box-shadow:
+        0 0 0 3px rgba(255,196,0,.16),
+        0 7px 18px rgba(101,67,0,.07);
+}
+
+#donationSheet .form-control[readonly],
+#expenseSheet .form-control[readonly]{
+    background:rgba(255,253,244,.82);
+    color:#6f5b2b;
+}
+
+/* PhonePe scanner and proof preview */
+#donationSheet .phonepe-scanner,
+#expenseSheet .proof-preview{
+    margin-top:14px;
+    padding:16px;
+    background:rgba(255,255,255,.82);
+    border:1px solid rgba(178,126,0,.16);
+    border-radius:14px;
+    box-shadow:0 7px 18px rgba(96,63,0,.06);
+}
+
+#donationSheet .phonepe-scanner img,
+#expenseSheet .proof-preview img{
+    border-radius:12px;
+}
+
+/* File button */
+#expenseSheet .payment-proof-input::file-selector-button{
+    margin-right:10px;
+    padding:8px 12px;
+    background:#fff3bd;
+    border:1px solid #d8a500;
+    border-radius:9px;
+    color:#684900;
+    font-weight:800;
+}
+
+/* Save buttons */
+#donationSheet .save-btn,
+#expenseSheet .save-btn{
+    min-height:50px;
+    margin-top:22px;
+    padding:13px 18px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #d89f00 0%,
+            #f1bd00 48%,
+            #d28f00 100%
+        );
+    border:1px solid #bd8000;
+    border-radius:13px;
+
+    color:#ffffff;
+    font-size:16px;
+    font-weight:900;
+
+    box-shadow:
+        0 11px 24px rgba(193,129,0,.25),
+        inset 0 1px 0 rgba(255,255,255,.35);
+
+    transition:
+        transform .18s ease,
+        box-shadow .18s ease;
+}
+
+#donationSheet .save-btn:hover,
+#expenseSheet .save-btn:hover{
+    box-shadow:
+        0 14px 28px rgba(193,129,0,.30),
+        inset 0 1px 0 rgba(255,255,255,.38);
+}
+
+#donationSheet .save-btn:active,
+#expenseSheet .save-btn:active{
+    transform:scale(.98);
+}
+
+/* Better spacing on mobile */
+@media(max-width:768px){
+    #menuSheet,
+    #donationSheet,
+    #expenseSheet{
+        padding-top:58px;
+        padding-right:15px;
+        padding-left:15px;
+        border-radius:24px 24px 0 0;
+    }
+
+    #menuSheet .sheet-content h2,
+    #donationSheet .sheet-content h2,
+    #expenseSheet .sheet-content h2{
+        font-size:20px;
+    }
+
+    #menuSheet .sheet-link{
+        min-height:52px;
+        padding:13px 42px 13px 14px;
+        border-radius:14px;
+        font-size:14px;
+    }
+}
+
+@media(min-width:769px){
+    #menuSheet .sheet-content,
+    #donationSheet .sheet-content,
+    #expenseSheet .sheet-content{
+        max-width:720px;
+        margin:0 auto;
+    }
+
+    #menuSheet{
+        min-height:520px;
+    }
+}
+
+
+/* =========================================================
+   CLEAN LITE THEME FOR SELECTED SERVICE SHEETS ONLY
+   Main service menu remains unchanged.
+========================================================= */
+
+#donationSheet,
+#expenseSheet{
+    background:#fbfaf6;
+    border-top:1px solid #e8e2d5;
+    box-shadow:0 -16px 42px rgba(35,30,20,.16);
+}
+
+/* Remove strong decorative gold styling */
+#donationSheet::before,
+#expenseSheet::before{
+    width:54px;
+    height:4px;
+    background:#d8d1c3;
+    box-shadow:none;
+}
+
+/* Simple close button */
+#donationSheet .close-sheet,
+#expenseSheet .close-sheet{
+    background:#ffffff;
+    border:1px solid #e4dfd5;
+    color:#5f5a52;
+    box-shadow:0 4px 12px rgba(40,35,25,.07);
+}
+
+#donationSheet .close-sheet:active,
+#expenseSheet .close-sheet:active{
+    background:#f1eee8;
+}
+
+/* Calm headings */
+#donationSheet .sheet-content h2,
+#expenseSheet .sheet-content h2{
+    color:#302d28;
+    font-family:Arial,sans-serif;
+    font-size:21px;
+    font-weight:750;
+    letter-spacing:0;
+}
+
+/* Clean labels */
+#donationSheet .form-group label,
+#expenseSheet .form-group label{
+    color:#4e4a44;
+    font-size:13px;
+    font-weight:700;
+}
+
+/* Light input design */
+#donationSheet .form-control,
+#expenseSheet .form-control,
+#donationSheet .payment-proof-input,
+#expenseSheet .payment-proof-input{
+    min-height:47px;
+    padding:12px 13px;
+
+    background:#ffffff;
+    border:1px solid #ded9cf;
+    border-radius:11px;
+
+    color:#292724;
+    box-shadow:none;
+}
+
+#donationSheet .form-control::placeholder,
+#expenseSheet .form-control::placeholder{
+    color:#9b968e;
+}
+
+#donationSheet .form-control:focus,
+#expenseSheet .form-control:focus,
+#donationSheet .payment-proof-input:focus,
+#expenseSheet .payment-proof-input:focus{
+    background:#ffffff;
+    border-color:#a9a397;
+    box-shadow:0 0 0 3px rgba(120,115,105,.09);
+}
+
+#donationSheet .form-control[readonly],
+#expenseSheet .form-control[readonly]{
+    background:#f4f2ed;
+    color:#777168;
+}
+
+/* Scanner and preview cards */
+#donationSheet .phonepe-scanner,
+#expenseSheet .proof-preview{
+    background:#ffffff;
+    border:1px solid #e1ddd4;
+    border-radius:12px;
+    box-shadow:none;
+}
+
+/* File input button */
+#expenseSheet .payment-proof-input::file-selector-button{
+    background:#f0eee9;
+    border:1px solid #d4cec4;
+    color:#4f4a43;
+    border-radius:8px;
+}
+
+/* Clean muted buttons */
+#donationSheet .save-btn,
+#expenseSheet .save-btn{
+    min-height:49px;
+    margin-top:22px;
+
+    background:#5f685f;
+    border:1px solid #5f685f;
+    border-radius:11px;
+
+    color:#ffffff;
+    font-size:15px;
+    font-weight:750;
+
+    box-shadow:0 7px 16px rgba(65,75,65,.16);
+}
+
+#donationSheet .save-btn:hover,
+#expenseSheet .save-btn:hover{
+    background:#535c53;
+    border-color:#535c53;
+    box-shadow:0 8px 18px rgba(65,75,65,.18);
+}
+
+#donationSheet .save-btn:active,
+#expenseSheet .save-btn:active{
+    background:#485148;
+    transform:scale(.985);
+}
+
+/* Messages */
+#donationSheet .form-message,
+#expenseSheet .form-message{
+    font-size:13px;
+    font-weight:650;
+}
+
+/* Mobile refinement */
+@media(max-width:768px){
+    #donationSheet,
+    #expenseSheet{
+        border-radius:22px 22px 0 0;
+        padding-right:16px;
+        padding-left:16px;
+    }
+
+    #donationSheet .sheet-content h2,
+    #expenseSheet .sheet-content h2{
+        font-size:19px;
+    }
+
+    #donationSheet .form-control,
+    #expenseSheet .form-control,
+    #donationSheet .payment-proof-input,
+    #expenseSheet .payment-proof-input{
+        font-size:14px;
+    }
+}
+
+
+/* =========================================================
+   SLIGHTLY RICHER COLOR FOR SELECTED SERVICE SHEETS
+========================================================= */
+
+#donationSheet,
+#expenseSheet{
+    background:
+        linear-gradient(
+            180deg,
+            #fffdf7 0%,
+            #faf4e7 100%
+        );
+    border-top:1px solid #dfd2bb;
+}
+
+#donationSheet::before,
+#expenseSheet::before{
+    background:#c9aa73;
+}
+
+#donationSheet .sheet-content h2,
+#expenseSheet .sheet-content h2{
+    color:#3d352b;
+}
+
+#donationSheet .form-group label,
+#expenseSheet .form-group label{
+    color:#5a4c3d;
+}
+
+#donationSheet .form-control,
+#expenseSheet .form-control,
+#donationSheet .payment-proof-input,
+#expenseSheet .payment-proof-input{
+    background:#fffefb;
+    border-color:#d8c9b2;
+}
+
+#donationSheet .form-control:focus,
+#expenseSheet .form-control:focus,
+#donationSheet .payment-proof-input:focus,
+#expenseSheet .payment-proof-input:focus{
+    border-color:#a98c61;
+    box-shadow:0 0 0 3px rgba(169,140,97,.12);
+}
+
+#donationSheet .form-control[readonly],
+#expenseSheet .form-control[readonly]{
+    background:#f3ede3;
+}
+
+#donationSheet .phonepe-scanner,
+#expenseSheet .proof-preview{
+    background:#fffdf9;
+    border-color:#ddd0bc;
+}
+
+#expenseSheet .payment-proof-input::file-selector-button{
+    background:#eee5d7;
+    border-color:#cfc0aa;
+    color:#514437;
+}
+
+#donationSheet .save-btn,
+#expenseSheet .save-btn{
+    background:#687a68;
+    border-color:#687a68;
+    box-shadow:0 8px 18px rgba(70,90,70,.20);
+}
+
+#donationSheet .save-btn:hover,
+#expenseSheet .save-btn:hover{
+    background:#5b6d5b;
+    border-color:#5b6d5b;
+}
+
+#donationSheet .save-btn:active,
+#expenseSheet .save-btn:active{
+    background:#4f604f;
+}
+
+
+/* =========================================================
+   MEDIUM COLOR VERSION FOR SELECTED SERVICE SHEETS
+========================================================= */
+
+#donationSheet,
+#expenseSheet{
+    background:
+        linear-gradient(
+            180deg,
+            #fff8e8 0%,
+            #f6ead2 100%
+        );
+    border-top:1px solid #d4bd92;
+}
+
+#donationSheet::before,
+#expenseSheet::before{
+    background:#b98d48;
+}
+
+#donationSheet .close-sheet,
+#expenseSheet .close-sheet{
+    background:#fffaf0;
+    border-color:#d7c4a5;
+    color:#5a4937;
+}
+
+#donationSheet .sheet-content h2,
+#expenseSheet .sheet-content h2{
+    color:#4a3928;
+}
+
+#donationSheet .form-group label,
+#expenseSheet .form-group label{
+    color:#6a5037;
+}
+
+#donationSheet .form-control,
+#expenseSheet .form-control,
+#donationSheet .payment-proof-input,
+#expenseSheet .payment-proof-input{
+    background:#fffdf8;
+    border-color:#cdb894;
+}
+
+#donationSheet .form-control:focus,
+#expenseSheet .form-control:focus,
+#donationSheet .payment-proof-input:focus,
+#expenseSheet .payment-proof-input:focus{
+    border-color:#9f7b43;
+    box-shadow:0 0 0 3px rgba(159,123,67,.15);
+}
+
+#donationSheet .form-control[readonly],
+#expenseSheet .form-control[readonly]{
+    background:#efe4d1;
+}
+
+#donationSheet .phonepe-scanner,
+#expenseSheet .proof-preview{
+    background:#fffaf1;
+    border-color:#d2bd9b;
+}
+
+#expenseSheet .payment-proof-input::file-selector-button{
+    background:#e5d3b8;
+    border-color:#bda47d;
+    color:#554331;
+}
+
+#donationSheet .save-btn,
+#expenseSheet .save-btn{
+    background:#5c745f;
+    border-color:#5c745f;
+    box-shadow:0 9px 20px rgba(63,88,67,.24);
+}
+
+#donationSheet .save-btn:hover,
+#expenseSheet .save-btn:hover{
+    background:#4f6752;
+    border-color:#4f6752;
+}
+
+#donationSheet .save-btn:active,
+#expenseSheet .save-btn:active{
+    background:#435946;
+}
+
+
+/* =========================================================
+   FINANCIAL SUMMARY CAROUSEL
+   Soft pastel cards with right-side images
+========================================================= */
+.home-carousel{
+    position:absolute;
+    left:50%;
+    bottom:calc(22px + env(safe-area-inset-bottom));
+    z-index:6;
+
+    width:min(90vw, 560px);
+    transform:translateX(-50%);
+}
+
+.carousel-viewport{
+    position:relative;
+    width:100%;
+    overflow:hidden;
+
+    border-radius:24px;
+
+    background:rgba(255,255,255,.10);
+
+    box-shadow:
+        0 18px 45px rgba(0,0,0,.28);
+
+    backdrop-filter:blur(8px);
+    -webkit-backdrop-filter:blur(8px);
+
+    touch-action:pan-y;
+    cursor:grab;
+}
+
+.carousel-viewport:active{
+    cursor:grabbing;
+}
+
+.carousel-track{
+    display:flex;
+    width:100%;
+
+    transition:
+        transform .52s cubic-bezier(.22,.61,.36,1);
+
+    will-change:transform;
+}
+
+.carousel-track.no-transition{
+    transition:none !important;
+}
+
+.home-card{
+    position:relative;
+    flex:0 0 100%;
+
+    min-height:156px;
+    padding:24px;
+
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:20px;
+
+    overflow:hidden;
+
+    border:1px solid rgba(255,255,255,.78);
+    border-radius:24px;
+
+    color:#2d2d2d;
+
+    box-shadow:
+        0 14px 34px rgba(0,0,0,.16),
+        inset 0 1px 0 rgba(255,255,255,.88);
+}
+
+/* 1. LIGHT YELLOW */
+.home-card:nth-child(1){
+    background:
+        linear-gradient(
+            135deg,
+            #fff9cf 0%,
+            #fff0a8 100%
+        );
+}
+
+/* 2. LIGHT PINK */
+.home-card:nth-child(2){
+    background:
+        linear-gradient(
+            135deg,
+            #ffe8ef 0%,
+            #ffd2df 100%
+        );
+}
+
+/* 3. LIGHT BLUE */
+.home-card:nth-child(3){
+    background:
+        linear-gradient(
+            135deg,
+            #e7f5ff 0%,
+            #cfeaff 100%
+        );
+}
+
+/* 4. LIGHT GREEN */
+.home-card:nth-child(4){
+    background:
+        linear-gradient(
+            135deg,
+            #e8f8ec 0%,
+            #d1efd8 100%
+        );
+}
+
+/* 5. LIGHT LAVENDER */
+.home-card:nth-child(5){
+    background:
+        linear-gradient(
+            135deg,
+            #f0eaff 0%,
+            #ddd2ff 100%
+        );
+}
+
+.home-card::before{
+    content:"";
+    position:absolute;
+    top:0;
+    left:0;
+
+    width:100%;
+    height:3px;
+
+    background:rgba(255,255,255,.92);
+    opacity:.9;
+}
+
+.home-card::after{
+    content:"";
+    position:absolute;
+    right:-36px;
+    bottom:-52px;
+
+    width:130px;
+    height:130px;
+
+    border-radius:50%;
+
+    background:rgba(255,255,255,.30);
+
+    pointer-events:none;
+}
+
+/* LEFT SIDE CONTENT */
+.card-content{
+    position:relative;
+    z-index:2;
+
+    flex:1;
+    min-width:0;
+
+    display:flex;
+    flex-direction:column;
+    align-items:flex-start;
+    justify-content:center;
+}
+
+.home-card h2{
+    margin:0 0 14px;
+
+    color:#4a4a4a;
+
+    font-family:Arial,sans-serif;
+    font-size:15px;
+    font-weight:700;
+    line-height:1.3;
+    letter-spacing:.3px;
+}
+
+.card-amount{
+    display:flex;
+    align-items:flex-start;
+    justify-content:flex-start;
+    gap:6px;
+
+    margin:0;
+
+    color:#202020;
+    font-family:Arial,sans-serif;
+}
+
+.rupee-symbol{
+    margin-top:4px;
+
+    color:#444444;
+    font-size:22px;
+    font-weight:700;
+    line-height:1;
+    opacity:.85;
+}
+
+.amount-value{
+    color:#202020;
+    font-size:46px;
+    font-weight:800;
+    line-height:.95;
+    letter-spacing:-1.5px;
+}
+
+/* RIGHT SIDE IMAGE */
+.card-picture{
+    position:relative;
+    z-index:2;
+
+    width:105px;
+    height:105px;
+
+    flex-shrink:0;
+
+    object-fit:contain;
+
+    user-select:none;
+    -webkit-user-select:none;
+    -webkit-user-drag:none;
+    pointer-events:none;
+}
+
+.carousel-dots{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    gap:7px;
+    margin-top:12px;
+}
+
+.carousel-dot{
+    width:7px;
+    height:7px;
+    padding:0;
+
+    border:none;
+    border-radius:999px;
+
+    background:rgba(255,255,255,.45);
+
+    transition:
+        width .25s ease,
+        background .25s ease,
+        opacity .25s ease,
+        transform .25s ease;
+}
+
+.carousel-dot.active{
+    width:24px;
+    background:#ffffff;
+}
+
+.carousel-dot:active{
+    transform:scale(.9);
+}
+
+@media(max-width:768px){
+    .home-carousel{
+        bottom:calc(18px + env(safe-area-inset-bottom));
+        width:calc(100vw - 28px);
+    }
+
+    .carousel-viewport,
+    .home-card{
+        border-radius:21px;
+    }
+
+    .home-card{
+        min-height:142px;
+        padding:20px;
+        gap:14px;
+    }
+
+    .home-card h2{
+        margin-bottom:11px;
+        font-size:14px;
+    }
+
+    .rupee-symbol{
+        font-size:20px;
+    }
+
+    .amount-value{
+        font-size:38px;
+    }
+
+    .card-picture{
+        width:88px;
+        height:88px;
+    }
+}
+
+@media(max-width:380px){
+    .home-carousel{
+        width:calc(100vw - 20px);
+        bottom:calc(14px + env(safe-area-inset-bottom));
+    }
+
+    .home-card{
+        min-height:134px;
+        padding:17px;
+        gap:10px;
+    }
+
+    .home-card h2{
+        font-size:13px;
+    }
+
+    .amount-value{
+        font-size:34px;
+    }
+
+    .card-picture{
+        width:76px;
+        height:76px;
+    }
+}
+.btnSpinner{
+    width:18px;
+    height:18px;
+    display:inline-block;
+    margin-right:8px;
+    border:3px solid rgba(255,255,255,.35);
+    border-top-color:#fff;
+    border-radius:50%;
+    animation:spin .7s linear infinite;
+    vertical-align:middle;
+}
+
+@keyframes spin{
+    to{
+        transform:rotate(360deg);
+    }
+}
+.btnSuccessTick{
+    width:20px;
+    height:20px;
+    display:inline-block;
+    margin-right:8px;
+    position:relative;
+    vertical-align:middle;
+}
+
+.btnSuccessTick::before{
+    content:"";
+    position:absolute;
+    left:5px;
+    top:1px;
+    width:6px;
+    height:12px;
+    border-right:3px solid #fff;
+    border-bottom:3px solid #fff;
+    transform:rotate(45deg);
+    animation:tickPop .25s ease forwards;
+}
+
+@keyframes tickPop{
+    from{
+        opacity:0;
+        transform:rotate(45deg) scale(.2);
+    }
+    to{
+        opacity:1;
+        transform:rotate(45deg) scale(1);
+    }
+}
+.expense-balance-text{
+    margin:7px 2px 0;
+    padding:0;
+
+    color:#63a86f;
+    font-family:Arial,sans-serif;
+    font-size:13px;
+    font-weight:700;
+    line-height:1.4;
+    text-align:left;
+}
+
+.expense-balance-text.loading{
+    color:#8aa68f;
+}
+
+.expense-balance-text.error{
+    color:#c35f5f;
+}
+
+</style>
+ <link rel="stylesheet" href="photos.css">
+ <link rel="stylesheet" href="pdf.css">
+ <link rel="stylesheet" href="ustav.css">
+ <link rel="stylesheet" href="approval.css">
+  <link rel="stylesheet" href="olddonation.css">
+</head>
+
+<body>
+
+<main class="home-page">
+
+    <img
+        src="./homepage.jpeg"
+        class="home-background"
+        alt="Home background"
+        draggable="false"
+    >
+
+    <div class="home-overlay"></div>
+
+    <button
+        type="button"
+        class="add-btn"
+        id="addBtn"
+    >
+        Add
+    </button>
+
+    <h1 class="home-title">
+        <span>శ్రీ వరసిద్ధి వినాయక</span>
+        <span>ఉత్సవ కమిటీ</span>
+    </h1>
+
+    <!-- 5-CARD FINANCIAL SUMMARY CAROUSEL -->
+    <section
+        class="home-carousel"
+        id="homeCarousel"
+        aria-label="Committee financial summary"
+    >
+        <div class="carousel-viewport" id="carouselViewport">
+
+            <div class="carousel-track" id="carouselTrack">
+
+                <article class="home-card">
+                    <div class="card-content">
+                        <h2>Chavithi Donations</h2>
+
+                        <div class="card-amount">
+                            <span class="rupee-symbol">₹</span>
+                            <span class="amount-value" id="chavithiDonationTotal">0</span>
+                        </div>
+                    </div>
+
+                    <img
+                        src="front.png"
+                        class="card-picture"
+                        alt="Chavithi Donations"
+                    >
+                </article>
+
+                <article class="home-card">
+                    <div class="card-content">
+                        <h2>Chavithi Expenses</h2>
+
+                        <div class="card-amount">
+                            <span class="rupee-symbol">₹</span>
+                            <span class="amount-value" id="chavithiExpenseTotal">0</span>
+                        </div>
+                    </div>
+
+                    <img
+                        src="front.png"
+                        class="card-picture"
+                        alt="Chavithi Expenses"
+                    >
+                </article>
+
+                <article class="home-card">
+                    <div class="card-content">
+                        <h2>Santharpana Donations</h2>
+
+                        <div class="card-amount">
+                            <span class="rupee-symbol">₹</span>
+                            <span class="amount-value" id="santharpanaDonationTotal">0</span>
+                        </div>
+                    </div>
+
+                    <img
+                        src="front.png"
+                        class="card-picture"
+                        alt="Santharpana Donations"
+                    >
+                </article>
+
+                <article class="home-card">
+                    <div class="card-content">
+                        <h2>Santharpana Expenses</h2>
+
+                        <div class="card-amount">
+                            <span class="rupee-symbol">₹</span>
+                            <span class="amount-value" id="santharpanaExpenseTotal">0</span>
+                        </div>
+                    </div>
+
+                    <img
+                        src="front.png"
+                        class="card-picture"
+                        alt="Santharpana Expenses"
+                    >
+                </article>
+
+                <article class="home-card">
+                    <div class="card-content">
+                        <h2>Total Expenses</h2>
+
+                        <div class="card-amount">
+                            <span class="rupee-symbol">₹</span>
+                            <span class="amount-value" id="totalExpenseTotal">0</span>
+                        </div>
+                    </div>
+
+                    <img
+                        src="front.png"
+                        class="card-picture"
+                        alt="Total Expenses"
+                    >
+                </article>
+
+            </div>
+
+        </div>
+
+        <div
+            class="carousel-dots"
+            id="carouselDots"
+            aria-label="Choose card"
+        ></div>
+    </section>
+
+    
+</main>
+
+<!-- BACKDROP -->
+<div
+    class="sheet-backdrop"
+    id="sheetBackdrop"
+></div>
+
+<!-- MAIN MENU SHEET -->
+<section
+    class="bottom-sheet"
+    id="menuSheet"
+    aria-hidden="true"
+>
+    <button
+        type="button"
+        class="close-sheet"
+        id="closeMenuSheet"
+    >
+        &times;
+    </button>
+
+    <div class="sheet-content">
+
+        <h2>Select Your Service</h2>
+
+        <nav class="sheet-menu">
+
+           <button
+    type="button"
+    class="sheet-link donation-category"
+    data-category="Chavithi Donations"
+    data-table="chavithi_donations"
+>
+    Chavithi Donations
+</button>
+
+           <button
+    type="button"
+    class="sheet-link donation-category"
+    data-category="Santharpana Donations"
+    data-table="santharpana_donations"
+>
+    Santharpana Donations
+</button>
+
+            <button
+                type="button"
+                class="sheet-link"
+                id="openExpenseBtn"
+            >
+                Add Expenses
+            </button>
+
+           <button
+    type="button"
+    class="sheet-link"
+    id="openApprovalRequests"
+>
+    Approval Requests
+</button>
+<button
+    type="button"
+    class="sheet-link"
+    id="openAdminAccessBtn"
+>
+    Admin Access
+</button>
+
+<button
+    type="button"
+    class="sheet-link"
+    id="openOldDonationBtn"
+>
+    Add Old Donations
+</button>
+            <!-- OPEN IMAGE UPLOAD SHEET -->
+            <button
+                type="button"
+                class="sheet-link"
+                id="openUploadImagesBtn"
+            >
+                Upload Images
+            </button>
+<button
+    type="button"
+    class="sheet-link"
+    id="openDownloadPdfBtn"
+>
+    Download PDF
+</button>
+            <button
+                type="button"
+                class="sheet-link"
+                id="openUploadPdfBtn"
+            >
+                Upload PDF
+            </button>
+
+            <button
+                type="button"
+                class="sheet-link"
+                id="logoutBtn"
+            >
+                Logout
+            </button>
+
+        </nav>
+
+    </div>
+</section>
+
+<!-- DONATION SHEET -->
+<section
+    class="bottom-sheet"
+    id="donationSheet"
+    aria-hidden="true"
+>
+    <button
+        type="button"
+        class="close-sheet"
+        id="closeDonationSheet"
+    >
+        &times;
+    </button>
+
+    <div class="sheet-content">
+
+        <h2 id="donationSheetTitle">
+            Add Donation
+        </h2>
+
+        <form
+            class="data-form"
+            id="donationForm"
+        >
+            <input
+                type="hidden"
+                id="donationCategory"
+            >
+
+            <div class="form-group">
+                <label for="donorName">Name</label>
+
+                <input
+                    type="text"
+                    class="form-control"
+                    id="donorName"
+                    placeholder="Enter name"
+                    required
+                >
+            </div>
+
+            <div class="form-group">
+                <label for="donorPhone">
+                    Phone Number
+                </label>
+
+                <input
+    type="tel"
+    id="donorPhone"
+    class="form-control"
+    maxlength="10"
+    inputmode="numeric"
+    pattern="[0-9]{10}"
+    placeholder="Enter 10-digit mobile number"
+    required
+>
+            </div>
+
+            <div class="form-group">
+                <label for="donationAmount">
+                    Amount
+                </label>
+
+                <input
+                    type="number"
+                    class="form-control"
+                    id="donationAmount"
+                    placeholder="Enter amount"
+                    min="1"
+                    required
+                >
+            </div>
+
+            <div class="form-group">
+                <label for="receivedBy">
+                    Received By
+                </label>
+
+                <input
+                    type="text"
+                    class="form-control"
+                    id="receivedBy"
+                    placeholder="Enter receiver name"
+                    required
+                >
+            </div>
+
+            <div class="form-group">
+                <label for="donationDate">
+                    Date
+                </label>
+
+                <input
+                    type="date"
+                    class="form-control"
+                    id="donationDate"
+                    readonly
+                    required
+                >
+            </div>
+
+            <div class="form-group">
+                <label for="amountType">
+                    Amount Type
+                </label>
+
+                <select
+                    class="form-control"
+                    id="amountType"
+                    required
+                >
+                    <option value="">
+                        Select Amount Type
+                    </option>
+
+                    <option value="Cash">
+                        Cash
+                    </option>
+
+                    <option value="PhonePe">
+                        PhonePe
+                    </option>
+                </select>
+
+                <div
+                    class="phonepe-scanner"
+                    id="phonePeScanner"
+                >
+                    <p>Scan and Pay</p>
+
+                    <img
+                        src="./scanner.webp"
+                        id="scannerImage"
+                        alt="PhonePe scanner"
+                    >
+
+                    <p
+                        class="scanner-error"
+                        id="scannerError"
+                        hidden
+                    >
+                        Scanner image not found.
+                    </p>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="additionalInformation">
+                    Additional Information
+                </label>
+
+                <textarea
+                    class="form-control"
+                    id="additionalInformation"
+                    placeholder="Enter additional information"
+                ></textarea>
+            </div>
+
+            <button
+                type="submit"
+                class="save-btn"
+            >
+                Save Donation
+            </button>
+
+            <p
+                class="form-message"
+                id="donationMessage"
+            ></p>
+
+        </form>
+
+    </div>
+</section>
+
+<!-- DOWNLOAD PDF DETAILS SHEET -->
+<section
+    class="bottom-sheet details"
+    id="downloadPdfSheet"
+    aria-hidden="true"
+>
+    <!-- CLOSE BUTTON -->
+    <button
+        type="button"
+        class="close-sheet"
+        id="closeDownloadPdfSheet"
+        aria-label="Close download PDF"
+    >
+        &times;
+    </button>
+
+    <div class="sheet-content download-pdf-content">
+
+        <div class="download-pdf-heading">
+            <h2>Download PDF</h2>
+
+            <p>
+                Select the PDF details you want to download.
+            </p>
+        </div>
+
+        <div class="download-pdf-select-box">
+
+            <label for="downloadPdfType">
+                Select PDF
+            </label>
+
+            <select
+                class="download-pdf-select"
+                id="downloadPdfType"
+            >
+                <option value="">
+                    Select PDF
+                </option>
+
+                <option value="chavithi_donations">
+                    Chavithi Donations
+                </option>
+
+                <option value="santharpana_donations">
+                    Santharpana Donations
+                </option>
+
+                <option value="expenses">
+                    Expenses
+                </option>
+            </select>
+
+        </div>
+
+        <button
+            type="button"
+            class="download-pdf-action-btn"
+            id="downloadSelectedPdfBtn"
+            disabled
+        >
+            <i class="fa-solid fa-file-arrow-down"></i>
+           
+        </button>
+
+        <p
+            class="download-pdf-message"
+            id="downloadPdfMessage"
+        ></p>
+
+    </div>
+</section>
+
+
+
+
+
+
+
+<!-- OLD DONATION BACKDROP -->
+<div
+    class="oldDonationBackdrop"
+    id="oldDonationBackdrop"
+></div>
+
+<!-- OLD DONATION SHEET -->
+<section
+    class="oldDonationSheet"
+    id="oldDonationSheet"
+    aria-hidden="true"
+>
+
+    <div class="oldDonationHandle"></div>
+
+    <div class="oldDonationHeader">
+
+        <h2>
+            Add Old Donation
+        </h2>
+
+       <button
+    type="button"
+    id="closeOldDonationSheet"
+    aria-label="Close"
+>
+    &times;
+</button>
+
+    </div>
+
+    <div class="oldDonationBody">
+
+      <div class="oldDonationForm">
+
+    <label class="oldDonationLabel">
+        Name
+    </label>
+
+    <input
+        type="text"
+        id="oldDonationName"
+        class="oldDonationInput"
+        placeholder="Enter donor name"
+    >
+
+    <label class="oldDonationLabel">
+        Mobile Number
+    </label>
+
+    <input
+        type="tel"
+        id="oldDonationMobile"
+        class="oldDonationInput"
+        maxlength="10"
+        placeholder="Enter mobile number"
+    >
+
+    <label class="oldDonationLabel">
+        Amount (₹)
+    </label>
+
+    <input
+        type="number"
+        id="oldDonationAmount"
+        class="oldDonationInput"
+        min="1"
+        placeholder="Enter donation amount"
+    >
+
+<label class="oldDonationLabel">
+    Donation Date
+</label>
+
+<input
+    type="text"
+    id="oldDonationDate"
+    class="oldDonationInput oldDonationDateInput"
+    placeholder="Select Date"
+    readonly
+>
+
+    <label class="oldDonationLabel">
+        Payment Type
+    </label>
+
+    <select
+        id="oldDonationPaymentType"
+        class="oldDonationSelect"
+    >
+        <option value="">
+            Select Payment Type
+        </option>
+
+        <option value="cash">
+            Cash
+        </option>
+
+        <option value="phonepe">
+            PhonePe
+        </option>
+    </select>
+
+    <label class="oldDonationLabel">
+        Additional Information
+    </label>
+
+    <textarea
+        id="oldDonationInformation"
+        class="oldDonationTextarea"
+        placeholder="Any Notes (optional)"
+    ></textarea>
+
+    <button
+        type="button"
+        id="saveOldDonationBtn"
+        class="oldDonationSaveBtn"
+    >
+        Save Donation
+    </button>
+
+</div>
+    </div>
+
+</section>
+<!-- EXPENSE SHEET -->
+<section
+    class="bottom-sheet"
+    id="expenseSheet"
+    aria-hidden="true"
+>
+    <button
+        type="button"
+        class="close-sheet"
+        id="closeExpenseSheet"
+    >
+        &times;
+    </button>
+
+    <div class="sheet-content">
+
+        <h2>Add Expenses</h2>
+
+        <form
+            class="data-form"
+            id="expenseForm"
+        >
+            <div class="form-group">
+                <label for="expenseDescription">
+                    Expense Description
+                </label>
+
+                <textarea
+                    class="form-control"
+                    id="expenseDescription"
+                    placeholder="Enter expense description"
+                    required
+                ></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="vendorName">
+                    Paid To / Vendor Name
+                </label>
+
+                <input
+                    type="text"
+                    class="form-control"
+                    id="vendorName"
+                    placeholder="Enter vendor name"
+                    required
+                >
+            </div>
+
+            <div class="form-group">
+                <label for="expenseType">
+                    Expense Type
+                </label>
+
+                <select
+                    class="form-control"
+                    id="expenseType"
+                    required
+                >
+                    <option value="">
+                        Select Expense Type
+                    </option>
+
+                    <option value="Chavithi Donations">
+                        From Chavithi Donations
+                    </option>
+
+                    <option value="Santharpana Donations">
+                        From Santharpana Donations
+                    </option>
+                </select>
+
+                <p
+    id="expenseBalanceText"
+    class="expense-balance-text"
+    hidden
+>
+    Total balance: ₹0
+</p>
+            </div>
+
+            <div class="form-group">
+                <label for="expenseAmount">
+                    Amount
+                </label>
+
+                <input
+                    type="number"
+                    class="form-control"
+                    id="expenseAmount"
+                    placeholder="Enter expense amount"
+                    min="1"
+                    required
+                >
+            </div>
+
+            <div class="form-group">
+                <label for="expenseDate">
+                    Date
+                </label>
+
+                <input
+                    type="date"
+                    class="form-control"
+                    id="expenseDate"
+                    readonly
+                    required
+                >
+            </div>
+
+            <div class="form-group">
+                <label for="paymentProof">
+                    Upload Payment Proof
+                </label>
+
+                <input
+                    type="file"
+                    class="payment-proof-input"
+                    id="paymentProof"
+                    accept="image/*,.pdf"
+                    required
+                >
+
+                <div
+                    class="proof-preview"
+                    id="proofPreview"
+                >
+                    <img
+                        id="proofPreviewImage"
+                        alt="Payment proof"
+                        hidden
+                    >
+
+                    <p
+                        class="proof-file-name"
+                        id="proofFileName"
+                    ></p>
+                </div>
+            </div>
+
+            <button
+                type="submit"
+                class="save-btn"
+            >
+                Save Expense
+            </button>
+
+            <p
+                class="form-message"
+                id="expenseMessage"
+            ></p>
+
+        </form>
+
+    </div>
+</section>
+
+<!-- MODERN UPLOAD IMAGE SHEET -->
+<section
+    class="bottom-sheet"
+    id="uploadImageSheet"
+    aria-hidden="true"
+>
+    <button
+        type="button"
+        class="close-sheet"
+        id="closeUploadImageSheet"
+        aria-label="Close upload images"
+    >
+        &times;
+    </button>
+
+    <div class="sheet-content">
+
+        <div class="upload-sheet-heading">
+            <h2>Upload Event Image</h2>
+            <p>
+                Select an image from your device and upload it.
+            </p>
+        </div>
+
+        <div class="upload-image-area">
+
+            <input
+                type="file"
+                class="image-file-input"
+                id="imageUploadInput"
+                accept="image/*"
+            >
+
+            <!-- NEW IMAGE SELECTOR -->
+            <label
+                for="imageUploadInput"
+                class="choose-image-btn"
+                id="chooseImageLabel"
+            >
+                <span class="upload-drop-title">
+                    Tap to choose an image
+                </span>
+
+                <span class="upload-drop-subtitle">
+                    JPG, PNG or WEBP • Maximum size 2 MB
+                </span>
+            </label>
+
+            <!-- NEW PREVIEW CARD -->
+            <div
+                class="upload-preview"
+                id="uploadPreview"
+            >
+                <div class="preview-image-box">
+                    <img
+                        id="uploadPreviewImage"
+                        alt="Selected image preview"
+                    >
+                </div>
+
+                <div class="preview-file-info">
+
+                    <p
+                        class="upload-file-name"
+                        id="uploadFileName"
+                    ></p>
+                </div>
+            </div>
+
+            <!-- ACTION BUTTONS -->
+            <div class="upload-actions">
+
+                <button
+                    type="button"
+                    class="upload-action-btn upload-image-btn"
+                    id="uploadSelectedImageBtn"
+                    disabled
+                >
+                    Upload Image
+                </button>
+
+                <button
+                    type="button"
+                    class="upload-action-btn cancel-image-btn"
+                    id="cancelSelectedImageBtn"
+                >
+                    Cancel
+                </button>
+
+            </div>
+
+            <!-- LOADING AND SUCCESS -->
+            <div
+                class="upload-status"
+                id="uploadStatus"
+            >
+                <div
+                    class="upload-loader"
+                    id="uploadLoader"
+                ></div>
+
+                <div
+                    class="upload-success"
+                    id="uploadSuccess"
+                >
+                    ✓
+                </div>
+
+                <p
+                    class="upload-status-text"
+                    id="uploadStatusText"
+                ></p>
+
+                <p
+                    class="uploaded-image-name"
+                    id="uploadedImageName"
+                ></p>
+            </div>
+
+        </div>
+
+    </div>
+</section>
+
+
+<!-- =====================================================
+     APPROVAL REQUESTS BACKDROP
+====================================================== -->
+
+<div
+    class="approval-backdrop"
+    id="approvalBackdrop"
+></div>
+
+
+<!-- =====================================================
+     APPROVAL REQUESTS BOTTOM SHEET
+====================================================== -->
+
+<section
+    class="approval-sheet"
+    id="approvalSheet"
+    aria-hidden="true"
+>
+
+    <div class="approval-sheet-handle"></div>
+
+    <div class="approval-sheet-header">
+
+        <div class="approval-sheet-title-wrap">
+
+            <h2 class="approval-sheet-title">
+                Approval Requests
+            </h2>
+
+            <p
+                class="approval-sheet-subtitle"
+                id="approvalRequestCount"
+            >
+                0 pending requests
+            </p>
+
+        </div>
+
+        <button
+            type="button"
+            class="approval-sheet-close"
+            id="approvalSheetClose"
+            aria-label="Close approval requests"
+        >
+            ×
+        </button>
+
+    </div>
+
+
+    <!-- LOADING -->
+
+    <div
+    class="approval-loading"
+    id="approvalLoading"
+>
+    <div class="approval-ios-spinner">
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+    </div>
+</div>
+
+
+    <!-- REQUEST LIST -->
+
+    <div
+        class="approval-list"
+        id="approvalRequestList"
+    >
+
+        <!-- Sample card only for checking design -->
+
+        <article class="approval-card">
+
+            <div class="approval-card-top">
+
+                <div class="approval-number-wrap">
+
+                    <div class="approval-number-icon">
+                        ☎
+                    </div>
+
+                    <div class="approval-number-details">
+
+                        <p class="approval-mobile">
+                            9876543210
+                        </p>
+
+                        <p class="approval-request-text">
+                            Customer login approval request
+                        </p>
+
+                    </div>
+
+                </div>
+
+                <span class="approval-status">
+                    Pending
+                </span>
+
+            </div>
+
+            <div class="approval-actions">
+
+                <button
+                    type="button"
+                    class="
+                        approval-action-btn
+                        approval-accept-btn
+                    "
+                >
+                    Accept
+                </button>
+
+                <button
+                    type="button"
+                    class="
+                        approval-action-btn
+                        approval-decline-btn
+                    "
+                >
+                    Decline
+                </button>
+
+                <button
+                    type="button"
+                    class="
+                        approval-action-btn
+                        approval-reject-btn
+                    "
+                >
+                    Reject
+                </button>
+
+            </div>
+
+        </article>
+
+    </div>
+
+
+    <!-- EMPTY STATE -->
+
+    <div
+        class="approval-empty"
+        id="approvalEmpty"
+    >
+
+        <div class="approval-empty-icon">
+            ✓
+        </div>
+
+        <h3>No pending requests</h3>
+
+        <p>
+            New customer approval requests will appear here.
+        </p>
+
+    </div>
+
+</section>
+
+
+
+
+
+<!-- UPLOAD PDF SHEET -->
+<section
+    class="bottom-sheet"
+    id="uploadPdfSheet"
+    aria-hidden="true"
+>
+    <button
+        type="button"
+        class="close-sheet"
+        id="closeUploadPdfSheet"
+        aria-label="Close upload PDF"
+    >
+        &times;
+    </button>
+
+    <div class="sheet-content">
+
+        <div class="upload-sheet-heading">
+            <h2>Upload PDF</h2>
+            <p>
+                Select a PDF from your device and upload it.
+            </p>
+        </div>
+
+        <div class="upload-image-area">
+
+            <input
+                type="file"
+                class="image-file-input"
+                id="pdfUploadInput"
+                accept=".pdf,application/pdf"
+            >
+
+            <label
+                for="pdfUploadInput"
+                class="choose-image-btn"
+                id="choosePdfLabel"
+            >
+                <span class="upload-drop-title">
+                    Tap to choose a PDF
+                </span>
+
+                <span class="upload-drop-subtitle">
+                    PDF file only • Maximum size 2 MB
+                </span>
+            </label>
+
+            <div
+                class="pdf-preview"
+                id="pdfPreview"
+            >
+                <div class="pdf-preview-card">
+                    <span class="pdf-file-badge">
+                        PDF
+                    </span>
+
+                    <p
+                        class="pdf-file-name"
+                        id="pdfFileName"
+                    ></p>
+                </div>
+            </div>
+
+            <div class="upload-actions">
+
+                <button
+                    type="button"
+                    class="upload-action-btn upload-image-btn"
+                    id="uploadSelectedPdfBtn"
+                    disabled
+                >
+                    Upload PDF
+                </button>
+
+                <button
+                    type="button"
+                    class="upload-action-btn cancel-image-btn"
+                    id="cancelSelectedPdfBtn"
+                >
+                    Cancel
+                </button>
+
+            </div>
+
+            <div
+                class="upload-status"
+                id="pdfUploadStatus"
+            >
+                <div
+                    class="upload-loader"
+                    id="pdfUploadLoader"
+                ></div>
+
+                <div
+                    class="upload-success"
+                    id="pdfUploadSuccess"
+                >
+                    ✓
+                </div>
+
+                <p
+                    class="upload-status-text"
+                    id="pdfUploadStatusText"
+                ></p>
+            </div>
+
+        </div>
+
+    </div>
+</section>
+
+
+<!-- LOGOUT CONFIRMATION SHEET -->
+<section
+    class="bottom-sheet"
+    id="logoutSheet"
+    role="dialog"
+    aria-modal="true"
+    aria-hidden="true"
+    aria-label="Logout confirmation"
+>
+    <button
+        type="button"
+        class="close-sheet"
+        id="closeLogoutSheet"
+        aria-label="Close logout confirmation"
+    >
+        &times;
+    </button>
+
+    <div class="logout-confirm-content">
+        <h2>Are you sure you want to exit?</h2>
+
+        <p>You will be returned to the login page.</p>
+
+        <div class="logout-actions">
+            <button
+                type="button"
+                class="logout-choice-btn logout-no-btn"
+                id="cancelLogoutBtn"
+            >
+                No
+            </button>
+
+            <button
+                type="button"
+                class="logout-choice-btn logout-yes-btn"
+                id="confirmLogoutBtn"
+            >
+                Yes
+            </button>
+        </div>
+    </div>
+</section>
+<section
+    class="photo-album-section"
+    id="photoAlbumSection"
+>
+    <h2 class="photo-album-title">
+        Photo Album
+    </h2>
+
+    <div
+        class="photo-album-container"
+        id="photoAlbumContainer"
+    >
+        <div class="photo-album-loading">
+            Loading photos...
+        </div>
+    </div>
+</section>
+
+
+<!-- SEPARATE PHOTO VIEWER -->
+<div
+    class="photo-viewer"
+    id="photoViewer"
+    aria-hidden="true"
+>
+    <button
+        type="button"
+        class="photo-viewer-close"
+        id="photoViewerClose"
+        aria-label="Close photo"
+    >
+        &times;
+    </button>
+
+    <img
+        class="photo-viewer-image"
+        id="photoViewerImage"
+        alt="Album photo"
+    >
+</div>
+
+<footer class="simple-footer">
+
+    <hr class="footer-divider">
+
+    <div class="footer-text">
+        Designed and Developed by
+    </div>
+
+    <div class="footer-company">
+        Cezonal Solutions Pvt. Ltd.
+    </div>
+
+    <div class="footer-location">
+        Tanuku, AP, India
+    </div>
+
+    <div class="special-thanks">
+        Special Thanks to Chivatam Vinayak Committee Team
+    </div>
+
+</footer>
+
+<!-- OLD STYLE DATE PICKER -->
+<div
+    class="oldDatePickerOverlay"
+    id="oldDatePickerOverlay"
+    aria-hidden="true"
+>
+    <div class="oldDatePickerSheet">
+
+        <div class="oldDatePickerHeader">
+
+            <button
+                type="button"
+                id="cancelOldDate"
+                class="oldDatePickerCancel"
+            >
+                Cancel
+            </button>
+
+            <strong>Select Date</strong>
+
+            <button
+                type="button"
+                id="doneOldDate"
+                class="oldDatePickerDone"
+            >
+                Done
+            </button>
+
+        </div>
+
+        <div class="oldDatePickerWheels">
+
+            <div class="oldDateWheelWrap">
+                <div class="oldDateWheelLabel">Day</div>
+
+                <select
+                    id="oldDateDay"
+                    class="oldDateWheel"
+                    size="5"
+                ></select>
+            </div>
+
+            <div class="oldDateWheelWrap">
+                <div class="oldDateWheelLabel">Month</div>
+
+                <select
+                    id="oldDateMonth"
+                    class="oldDateWheel"
+                    size="5"
+                ></select>
+            </div>
+
+            <div class="oldDateWheelWrap">
+                <div class="oldDateWheelLabel">Year</div>
+
+                <select
+                    id="oldDateYear"
+                    class="oldDateWheel"
+                    size="5"
+                ></select>
+            </div>
+
+            <div class="oldDateSelectedLine"></div>
+
+        </div>
+
+    </div>
+</div>
+
+<script src="phtos.js" defer></script>
+<script src="pdff.js" defer></script>
+<script src="admin.js" defer></script>
+<script src="pdf.js" defer></script>
+ <script src="ustav.js" defer></script>
+ <script src="donation.js" defer></script>
+    <script src="chavithi.js" defer></script>
+ <script src="expenses.js" defer></script>
+<script src="approve.js" defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+'use strict';
+'use strict';
+
+const SUPABASE_URL = 'https://rxdckizxuvmlhwpuyydk.supabase.co';
+const SUPABASE_ANON_KEY = 'sb_publishable_A_DfGloUYAWEekfzr2y5FQ_gexKf4c4';
+
+// Create Supabase client
+window.supabaseClient = window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_ANON_KEY
+);
+
+console.log("✅ Supabase connected:", window.supabaseClient);
+
+/* =========================================================
+   LOCAL FRONT-END MODE
+   No external server or cloud connection is used.
+   Data added here exists only while this page is open.
+========================================================= */
+const sessionDonations = [];
+const sessionExpenses = [];
+const sessionImages = [];
+const sessionPdfs = [];
+
+function initializeHomepage(){
+
+    const loginRole =
+        localStorage.getItem('loginRole');
+
+    if(
+        loginRole !== 'admin' &&
+        loginRole !== 'customer'
+    ){
+        window.location.replace('index.html');
+        return;
+    }
+
+    document.documentElement.classList.remove(
+        'admin-mode',
+        'customer-mode'
+    );
+
+    document.documentElement.classList.add(
+        loginRole === 'admin'
+            ? 'admin-mode'
+            : 'customer-mode'
+    );
+}
+
+
+/* SHEETS */
+const sheetBackdrop =
+    document.getElementById('sheetBackdrop');
+
+const menuSheet =
+    document.getElementById('menuSheet');
+
+const donationSheet =
+    document.getElementById('donationSheet');
+
+const expenseSheet =
+    document.getElementById('expenseSheet');
+
+const uploadImageSheet =
+    document.getElementById('uploadImageSheet');
+
+const uploadPdfSheet =
+    document.getElementById('uploadPdfSheet');
+
+const logoutSheet =
+    document.getElementById('logoutSheet');
+
+/* OPEN BUTTONS */
+const addButton =
+    document.getElementById('addBtn');
+
+const openExpenseButton =
+    document.getElementById('openExpenseBtn');
+
+const openUploadImagesButton =
+    document.getElementById('openUploadImagesBtn');
+
+const openUploadPdfButton =
+    document.getElementById('openUploadPdfBtn');
+
+/* CLOSE BUTTONS */
+const closeMenuSheetButton =
+    document.getElementById('closeMenuSheet');
+
+const closeDonationSheetButton =
+    document.getElementById('closeDonationSheet');
+
+const closeExpenseSheetButton =
+    document.getElementById('closeExpenseSheet');
+
+const closeUploadImageSheetButton =
+    document.getElementById('closeUploadImageSheet');
+
+const closeUploadPdfSheetButton =
+    document.getElementById('closeUploadPdfSheet');
+
+const closeLogoutSheetButton =
+    document.getElementById('closeLogoutSheet');
+
+/* DONATION */
+const donationCategoryButtons =
+    document.querySelectorAll('.donation-category');
+
+
+const donationCategory =
+    document.getElementById('donationCategory');
+
+const donationSheetTitle =
+    document.getElementById('donationSheetTitle');
+
+const donorName =
+    document.getElementById('donorName');
+
+const donorPhone =
+    document.getElementById('donorPhone');
+
+const donationAmount =
+    document.getElementById('donationAmount');
+
+const receivedBy =
+    document.getElementById('receivedBy');
+
+const donationDate =
+    document.getElementById('donationDate');
+
+const amountType =
+    document.getElementById('amountType');
+
+const additionalInformation =
+    document.getElementById('additionalInformation');
+
+const phonePeScanner =
+    document.getElementById('phonePeScanner');
+
+const scannerImage =
+    document.getElementById('scannerImage');
+
+const scannerError =
+    document.getElementById('scannerError');
+
+const donationMessage =
+    document.getElementById('donationMessage');
+
+/* EXPENSE */
+const expenseForm =
+    document.getElementById('expenseForm');
+
+const expenseDescription =
+    document.getElementById('expenseDescription');
+
+const vendorName =
+    document.getElementById('vendorName');
+
+const expenseType =
+    document.getElementById('expenseType');
+
+const expenseAmount =
+    document.getElementById('expenseAmount');
+
+const expenseDate =
+    document.getElementById('expenseDate');
+
+const paymentProof =
+    document.getElementById('paymentProof');
+
+const proofPreview =
+    document.getElementById('proofPreview');
+
+const proofPreviewImage =
+    document.getElementById('proofPreviewImage');
+
+const proofFileName =
+    document.getElementById('proofFileName');
+
+const expenseMessage =
+    document.getElementById('expenseMessage');
+
+/* IMAGE UPLOAD */
+const imageUploadInput =
+    document.getElementById('imageUploadInput');
+
+const uploadPreview =
+    document.getElementById('uploadPreview');
+
+const uploadPreviewImage =
+    document.getElementById('uploadPreviewImage');
+
+const uploadFileName =
+    document.getElementById('uploadFileName');
+
+const uploadSelectedImageButton =
+    document.getElementById('uploadSelectedImageBtn');
+
+const cancelSelectedImageButton =
+    document.getElementById('cancelSelectedImageBtn');
+
+const chooseImageLabel =
+    document.getElementById('chooseImageLabel');
+
+const uploadStatus =
+    document.getElementById('uploadStatus');
+
+const uploadLoader =
+    document.getElementById('uploadLoader');
+
+const uploadSuccess =
+    document.getElementById('uploadSuccess');
+
+const uploadStatusText =
+    document.getElementById('uploadStatusText');
+
+const uploadedImageName =
+    document.getElementById('uploadedImageName');
+
+/* PDF UPLOAD */
+const pdfUploadInput =
+    document.getElementById('pdfUploadInput');
+
+const pdfPreview =
+    document.getElementById('pdfPreview');
+
+const pdfFileName =
+    document.getElementById('pdfFileName');
+
+const choosePdfLabel =
+    document.getElementById('choosePdfLabel');
+
+const uploadSelectedPdfButton =
+    document.getElementById('uploadSelectedPdfBtn');
+
+const cancelSelectedPdfButton =
+    document.getElementById('cancelSelectedPdfBtn');
+
+const pdfUploadStatus =
+    document.getElementById('pdfUploadStatus');
+
+const pdfUploadLoader =
+    document.getElementById('pdfUploadLoader');
+
+const pdfUploadSuccess =
+    document.getElementById('pdfUploadSuccess');
+
+const pdfUploadStatusText =
+    document.getElementById('pdfUploadStatusText');
+
+const logoutButton =
+    document.getElementById('logoutBtn');
+
+const confirmLogoutButton =
+    document.getElementById('confirmLogoutBtn');
+
+const cancelLogoutButton =
+    document.getElementById('cancelLogoutBtn');
+
+let selectedImageData = '';
+let selectedImageName = '';
+let selectedImageFile = null;
+
+let selectedPdfData = '';
+let selectedPdfName = '';
+let selectedPdfType = '';
+let selectedPdfFile = null;
+
+let selectedProofData = '';
+let selectedProofName = '';
+let selectedProofType = '';
+let selectedProofFile = null;
+
+/* TODAY DATE */
+function getTodayDate(){
+    /* Always use India date so the form never shows yesterday */
+    const parts = new Intl.DateTimeFormat('en-GB', {
+        timeZone:'Asia/Kolkata',
+        year:'numeric',
+        month:'2-digit',
+        day:'2-digit'
+    }).formatToParts(new Date());
+
+    const year = parts.find(part => part.type === 'year').value;
+    const month = parts.find(part => part.type === 'month').value;
+    const day = parts.find(part => part.type === 'day').value;
+
+    return year + '-' + month + '-' + day;
+}
+
+/* HIDE ALL SHEETS */
+function hideAllSheets(){
+    menuSheet.classList.remove('show');
+    donationSheet.classList.remove('show');
+    expenseSheet.classList.remove('show');
+    uploadImageSheet.classList.remove('show');
+    uploadPdfSheet.classList.remove('show');
+    logoutSheet.classList.remove('show');
+
+    menuSheet.setAttribute('aria-hidden', 'true');
+    donationSheet.setAttribute('aria-hidden', 'true');
+    expenseSheet.setAttribute('aria-hidden', 'true');
+    uploadImageSheet.setAttribute('aria-hidden', 'true');
+    uploadPdfSheet.setAttribute('aria-hidden', 'true');
+    logoutSheet.setAttribute('aria-hidden', 'true');
+}
+
+/* OPEN MENU */
+function openMenuSheet(){
+    hideAllSheets();
+
+    menuSheet.classList.add('show');
+    menuSheet.setAttribute('aria-hidden', 'false');
+
+    sheetBackdrop.classList.add('show');
+
+    menuSheet.scrollTop = 0;
+}
+
+
+
+/* RESET IMAGE UPLOAD */
+function resetImageUpload(clearFileInput = true){
+
+    if(clearFileInput){
+        imageUploadInput.value = '';
+    }
+
+    selectedImageData = '';
+    selectedImageName = '';
+    selectedImageFile = null;
+
+    uploadPreview.classList.remove('show');
+    uploadPreview.style.display = '';
+
+    uploadPreviewImage.removeAttribute('src');
+    uploadFileName.textContent = '';
+
+    uploadSelectedImageButton.disabled = true;
+    uploadSelectedImageButton.style.display = '';
+
+    cancelSelectedImageButton.style.display = '';
+    chooseImageLabel.style.display = '';
+
+    uploadStatus.classList.remove('show');
+
+    uploadLoader.classList.remove('show');
+    uploadSuccess.classList.remove('show');
+
+    uploadStatusText.textContent = '';
+
+    uploadedImageName.textContent = '';
+    uploadedImageName.classList.remove('show');
+}
+
+/* OPEN IMAGE UPLOAD */
+function openUploadImageSheet(){
+    hideAllSheets();
+
+    resetImageUpload();
+
+    setTimeout(function(){
+        uploadImageSheet.classList.add('show');
+
+        uploadImageSheet.setAttribute(
+            'aria-hidden',
+            'false'
+        );
+
+        uploadImageSheet.scrollTop = 0;
+    }, 150);
+}
+
+/* RESET PDF UPLOAD */
+function resetPdfUpload(clearFileInput = true){
+
+    if(clearFileInput){
+        pdfUploadInput.value = '';
+    }
+
+    selectedPdfData = '';
+    selectedPdfName = '';
+    selectedPdfType = '';
+    selectedPdfFile = null;
+
+    pdfPreview.classList.remove('show');
+    pdfPreview.style.display = '';
+    pdfFileName.textContent = '';
+
+    choosePdfLabel.style.display = '';
+
+    uploadSelectedPdfButton.disabled = true;
+    uploadSelectedPdfButton.style.display = '';
+
+    cancelSelectedPdfButton.style.display = '';
+
+    pdfUploadStatus.classList.remove('show');
+    pdfUploadLoader.classList.remove('show');
+    pdfUploadSuccess.classList.remove('show');
+    pdfUploadStatusText.textContent = '';
+}
+
+/* OPEN PDF UPLOAD */
+function openUploadPdfSheet(){
+    hideAllSheets();
+
+    resetPdfUpload();
+
+    setTimeout(function(){
+        uploadPdfSheet.classList.add('show');
+        uploadPdfSheet.setAttribute('aria-hidden', 'false');
+        uploadPdfSheet.scrollTop = 0;
+    }, 150);
+}
+
+/* OPEN LOGOUT CONFIRMATION */
+function openLogoutSheet(){
+    hideAllSheets();
+
+    logoutSheet.classList.add('show');
+    logoutSheet.setAttribute('aria-hidden', 'false');
+
+    sheetBackdrop.classList.add('show');
+}
+
+/* RETURN FROM LOGOUT TO FIRST MENU */
+function returnToMenuFromLogout(){
+    logoutSheet.classList.remove('show');
+    logoutSheet.setAttribute('aria-hidden', 'true');
+
+    openMenuSheet();
+}
+
+/* CLOSE ALL */
+function closeAllSheets(){
+    hideAllSheets();
+
+    sheetBackdrop.classList.remove('show');
+
+    phonePeScanner.classList.remove('show');
+
+    resetPaymentProof();
+    resetImageUpload();
+    resetPdfUpload();
+}
+
+/* MAIN MENU */
+addButton.addEventListener(
+    'click',
+    openMenuSheet
+);
+
+/* CLOSE BUTTONS */
+closeMenuSheetButton.addEventListener(
+    'click',
+    closeAllSheets
+);
+
+/* =========================================================
+   MENU SHEET — LEFT/RIGHT EDGE SWIPE TO CLOSE
+========================================================= */
+
+let menuSwipeStartX = 0;
+let menuSwipeStartY = 0;
+let menuSwipeEndX = 0;
+let menuSwipeEndY = 0;
+
+const menuSwipeEdgeSize = 35;
+const menuSwipeMinimumDistance = 80;
+
+
+/* TOUCH START */
+menuSheet.addEventListener(
+    'touchstart',
+    function(event){
+
+        if(!menuSheet.classList.contains('show')){
+            return;
+        }
+
+        const touch = event.touches[0];
+
+        menuSwipeStartX = touch.clientX;
+        menuSwipeStartY = touch.clientY;
+
+        menuSwipeEndX = touch.clientX;
+        menuSwipeEndY = touch.clientY;
+    },
+    {
+        passive:true
+    }
+);
+
+
+/* TOUCH MOVE */
+menuSheet.addEventListener(
+    'touchmove',
+    function(event){
+
+        if(!menuSheet.classList.contains('show')){
+            return;
+        }
+
+        const touch = event.touches[0];
+
+        menuSwipeEndX = touch.clientX;
+        menuSwipeEndY = touch.clientY;
+    },
+    {
+        passive:true
+    }
+);
+
+
+/* TOUCH END */
+menuSheet.addEventListener(
+    'touchend',
+    function(){
+
+        if(!menuSheet.classList.contains('show')){
+            return;
+        }
+
+        const screenWidth =
+            window.innerWidth;
+
+        const horizontalDistance =
+            menuSwipeEndX - menuSwipeStartX;
+
+        const verticalDistance =
+            menuSwipeEndY - menuSwipeStartY;
+
+
+        /* IGNORE VERTICAL SCROLL */
+        if(
+            Math.abs(verticalDistance) >
+            Math.abs(horizontalDistance)
+        ){
+            return;
+        }
+
+
+        /* LEFT EDGE → SWIPE RIGHT */
+        const swipedFromLeftEdge =
+            menuSwipeStartX <= menuSwipeEdgeSize &&
+            horizontalDistance >= menuSwipeMinimumDistance;
+
+
+        /* RIGHT EDGE → SWIPE LEFT */
+        const swipedFromRightEdge =
+            menuSwipeStartX >=
+                screenWidth - menuSwipeEdgeSize &&
+            horizontalDistance <=
+                -menuSwipeMinimumDistance;
+
+
+        if(
+            swipedFromLeftEdge ||
+            swipedFromRightEdge
+        ){
+            closeMenuSheetButton.click();
+        }
+    },
+    {
+        passive:true
+    }
+);
+
+/* DONATION CROSS: RETURN TO SERVICE MENU */
+closeDonationSheetButton.addEventListener(
+    'click',
+    function(){
+        donationSheet.classList.remove('show');
+        donationSheet.setAttribute('aria-hidden', 'true');
+
+        phonePeScanner.classList.remove('show');
+        donationMessage.textContent = '';
+
+        setTimeout(function(){
+            openMenuSheet();
+        }, 150);
+    }
+);
+
+/* EXPENSE CROSS: RETURN TO SERVICE MENU */
+closeExpenseSheetButton.addEventListener(
+    'click',
+    function(){
+        expenseSheet.classList.remove('show');
+        expenseSheet.setAttribute('aria-hidden', 'true');
+
+        expenseMessage.textContent = '';
+        resetPaymentProof();
+
+        setTimeout(function(){
+            openMenuSheet();
+        }, 150);
+    }
+);
+/* =========================================================
+   EXPENSE SHEET — LEFT/RIGHT EDGE SWIPE TO SERVICE MENU
+========================================================= */
+
+let expenseSwipeStartX = 0;
+let expenseSwipeStartY = 0;
+let expenseSwipeEndX = 0;
+let expenseSwipeEndY = 0;
+
+const expenseSwipeEdgeSize = 35;
+const expenseSwipeMinimumDistance = 80;
+
+
+/* TOUCH START */
+expenseSheet.addEventListener(
+    "touchstart",
+    function(event){
+
+        if(
+            !expenseSheet.classList.contains("show") ||
+            event.touches.length !== 1
+        ){
+            return;
+        }
+
+        const touch = event.touches[0];
+
+        expenseSwipeStartX = touch.clientX;
+        expenseSwipeStartY = touch.clientY;
+
+        expenseSwipeEndX = touch.clientX;
+        expenseSwipeEndY = touch.clientY;
+    },
+    {
+        passive:true
+    }
+);
+
+
+/* TOUCH MOVE */
+expenseSheet.addEventListener(
+    "touchmove",
+    function(event){
+
+        if(!expenseSheet.classList.contains("show")){
+            return;
+        }
+
+        const touch = event.touches[0];
+
+        expenseSwipeEndX = touch.clientX;
+        expenseSwipeEndY = touch.clientY;
+    },
+    {
+        passive:true
+    }
+);
+
+
+/* TOUCH END */
+expenseSheet.addEventListener(
+    "touchend",
+    function(){
+
+        if(!expenseSheet.classList.contains("show")){
+            return;
+        }
+
+        const screenWidth =
+            window.innerWidth;
+
+        const horizontalDistance =
+            expenseSwipeEndX - expenseSwipeStartX;
+
+        const verticalDistance =
+            expenseSwipeEndY - expenseSwipeStartY;
+
+
+        /* IGNORE NORMAL UP/DOWN FORM SCROLL */
+        if(
+            Math.abs(verticalDistance) >
+            Math.abs(horizontalDistance)
+        ){
+            return;
+        }
+
+
+        /* LEFT EDGE → SWIPE RIGHT */
+        const swipedFromLeftEdge =
+            expenseSwipeStartX <= expenseSwipeEdgeSize &&
+            horizontalDistance >= expenseSwipeMinimumDistance;
+
+
+        /* RIGHT EDGE → SWIPE LEFT */
+        const swipedFromRightEdge =
+            expenseSwipeStartX >=
+                screenWidth - expenseSwipeEdgeSize &&
+            horizontalDistance <=
+                -expenseSwipeMinimumDistance;
+
+
+        if(
+            swipedFromLeftEdge ||
+            swipedFromRightEdge
+        ){
+            closeExpenseSheetButton.click();
+        }
+    },
+    {
+        passive:true
+    }
+);
+/* UPLOAD IMAGE CROSS: RETURN TO FIRST MENU */
+closeUploadImageSheetButton.addEventListener(
+    'click',
+    function(){
+        resetImageUpload();
+        uploadImageSheet.classList.remove('show');
+        uploadImageSheet.setAttribute('aria-hidden', 'true');
+        openMenuSheet();
+    }
+);
+/* =========================================================
+   UPLOAD IMAGE SHEET — EDGE SWIPE TO SERVICE MENU
+========================================================= */
+
+let uploadImageSwipeStartX = 0;
+let uploadImageSwipeStartY = 0;
+let uploadImageSwipeEndX = 0;
+let uploadImageSwipeEndY = 0;
+
+const uploadImageSwipeEdgeSize = 35;
+const uploadImageSwipeMinimumDistance = 80;
+
+
+/* TOUCH START */
+uploadImageSheet.addEventListener(
+    "touchstart",
+    function(event){
+
+        if(
+            !uploadImageSheet.classList.contains("show") ||
+            event.touches.length !== 1
+        ){
+            return;
+        }
+
+        const touch =
+            event.touches[0];
+
+        uploadImageSwipeStartX =
+            touch.clientX;
+
+        uploadImageSwipeStartY =
+            touch.clientY;
+
+        uploadImageSwipeEndX =
+            touch.clientX;
+
+        uploadImageSwipeEndY =
+            touch.clientY;
+    },
+    {
+        passive:true
+    }
+);
+
+
+/* TOUCH MOVE */
+uploadImageSheet.addEventListener(
+    "touchmove",
+    function(event){
+
+        if(
+            !uploadImageSheet.classList.contains("show") ||
+            event.touches.length !== 1
+        ){
+            return;
+        }
+
+        const touch =
+            event.touches[0];
+
+        uploadImageSwipeEndX =
+            touch.clientX;
+
+        uploadImageSwipeEndY =
+            touch.clientY;
+    },
+    {
+        passive:true
+    }
+);
+
+
+/* TOUCH END */
+uploadImageSheet.addEventListener(
+    "touchend",
+    function(){
+
+        if(
+            !uploadImageSheet.classList.contains("show")
+        ){
+            return;
+        }
+
+        const screenWidth =
+            window.innerWidth;
+
+        const horizontalDistance =
+            uploadImageSwipeEndX -
+            uploadImageSwipeStartX;
+
+        const verticalDistance =
+            uploadImageSwipeEndY -
+            uploadImageSwipeStartY;
+
+
+        /* IGNORE NORMAL UP/DOWN SCROLL */
+        if(
+            Math.abs(verticalDistance) >
+            Math.abs(horizontalDistance)
+        ){
+            return;
+        }
+
+
+        /* LEFT EDGE → SWIPE RIGHT */
+        const swipedFromLeftEdge =
+            uploadImageSwipeStartX <=
+                uploadImageSwipeEdgeSize &&
+            horizontalDistance >=
+                uploadImageSwipeMinimumDistance;
+
+
+        /* RIGHT EDGE → SWIPE LEFT */
+        const swipedFromRightEdge =
+            uploadImageSwipeStartX >=
+                screenWidth -
+                uploadImageSwipeEdgeSize &&
+            horizontalDistance <=
+                -uploadImageSwipeMinimumDistance;
+
+
+        if(
+            swipedFromLeftEdge ||
+            swipedFromRightEdge
+        ){
+            closeUploadImageSheetButton.click();
+        }
+    },
+    {
+        passive:true
+    }
+);
+
+
+/* UPLOAD PDF CROSS: RETURN TO FIRST MENU */
+closeUploadPdfSheetButton.addEventListener(
+    'click',
+    function(){
+        resetPdfUpload();
+        uploadPdfSheet.classList.remove('show');
+        uploadPdfSheet.setAttribute('aria-hidden', 'true');
+        openMenuSheet();
+    }
+);
+/* =========================================================
+   UPLOAD PDF SHEET — EDGE SWIPE TO SERVICE MENU
+========================================================= */
+
+let uploadPdfSwipeStartX = 0;
+let uploadPdfSwipeStartY = 0;
+let uploadPdfSwipeEndX = 0;
+let uploadPdfSwipeEndY = 0;
+
+const uploadPdfSwipeEdgeSize = 35;
+const uploadPdfSwipeMinimumDistance = 80;
+
+
+/* TOUCH START */
+uploadPdfSheet?.addEventListener(
+    "touchstart",
+    function(event){
+
+        if(
+            !uploadPdfSheet.classList.contains("show") ||
+            event.touches.length !== 1
+        ){
+            return;
+        }
+
+        const touch =
+            event.touches[0];
+
+        uploadPdfSwipeStartX =
+            touch.clientX;
+
+        uploadPdfSwipeStartY =
+            touch.clientY;
+
+        uploadPdfSwipeEndX =
+            touch.clientX;
+
+        uploadPdfSwipeEndY =
+            touch.clientY;
+    },
+    {
+        passive:true
+    }
+);
+
+
+/* TOUCH MOVE */
+uploadPdfSheet?.addEventListener(
+    "touchmove",
+    function(event){
+
+        if(
+            !uploadPdfSheet.classList.contains("show") ||
+            event.touches.length !== 1
+        ){
+            return;
+        }
+
+        const touch =
+            event.touches[0];
+
+        uploadPdfSwipeEndX =
+            touch.clientX;
+
+        uploadPdfSwipeEndY =
+            touch.clientY;
+    },
+    {
+        passive:true
+    }
+);
+
+
+/* TOUCH END */
+uploadPdfSheet?.addEventListener(
+    "touchend",
+    function(){
+
+        if(
+            !uploadPdfSheet.classList.contains("show")
+        ){
+            return;
+        }
+
+        const screenWidth =
+            window.innerWidth;
+
+        const horizontalDistance =
+            uploadPdfSwipeEndX -
+            uploadPdfSwipeStartX;
+
+        const verticalDistance =
+            uploadPdfSwipeEndY -
+            uploadPdfSwipeStartY;
+
+
+        /* IGNORE NORMAL UP/DOWN SCROLL */
+        if(
+            Math.abs(verticalDistance) >
+            Math.abs(horizontalDistance)
+        ){
+            return;
+        }
+
+
+        /* LEFT EDGE → SWIPE RIGHT */
+        const swipedFromLeftEdge =
+            uploadPdfSwipeStartX <=
+                uploadPdfSwipeEdgeSize &&
+            horizontalDistance >=
+                uploadPdfSwipeMinimumDistance;
+
+
+        /* RIGHT EDGE → SWIPE LEFT */
+        const swipedFromRightEdge =
+            uploadPdfSwipeStartX >=
+                screenWidth -
+                uploadPdfSwipeEdgeSize &&
+            horizontalDistance <=
+                -uploadPdfSwipeMinimumDistance;
+
+
+        if(
+            swipedFromLeftEdge ||
+            swipedFromRightEdge
+        ){
+            closeUploadPdfSheetButton?.click();
+        }
+    },
+    {
+        passive:true
+    }
+);
+
+
+
+
+
+/* LOGOUT CROSS: RETURN TO FIRST MENU */
+closeLogoutSheetButton.addEventListener(
+    'click',
+    returnToMenuFromLogout
+);
+
+/* LOGOUT NO: RETURN TO FIRST MENU */
+cancelLogoutButton.addEventListener(
+    'click',
+    returnToMenuFromLogout
+);
+/* =========================================================
+   LOGOUT SHEET — EDGE SWIPE TO SERVICE MENU
+========================================================= */
+
+let logoutSwipeStartX = 0;
+let logoutSwipeStartY = 0;
+let logoutSwipeEndX = 0;
+let logoutSwipeEndY = 0;
+
+const logoutSwipeEdgeSize = 35;
+const logoutSwipeMinimumDistance = 80;
+
+
+/* TOUCH START */
+logoutSheet?.addEventListener(
+    "touchstart",
+    function(event){
+
+        if(
+            !logoutSheet.classList.contains("show") ||
+            event.touches.length !== 1
+        ){
+            return;
+        }
+
+        const touch =
+            event.touches[0];
+
+        logoutSwipeStartX =
+            touch.clientX;
+
+        logoutSwipeStartY =
+            touch.clientY;
+
+        logoutSwipeEndX =
+            touch.clientX;
+
+        logoutSwipeEndY =
+            touch.clientY;
+    },
+    {
+        passive:true
+    }
+);
+
+
+/* TOUCH MOVE */
+logoutSheet?.addEventListener(
+    "touchmove",
+    function(event){
+
+        if(
+            !logoutSheet.classList.contains("show") ||
+            event.touches.length !== 1
+        ){
+            return;
+        }
+
+        const touch =
+            event.touches[0];
+
+        logoutSwipeEndX =
+            touch.clientX;
+
+        logoutSwipeEndY =
+            touch.clientY;
+    },
+    {
+        passive:true
+    }
+);
+
+
+/* TOUCH END */
+logoutSheet?.addEventListener(
+    "touchend",
+    function(){
+
+        if(
+            !logoutSheet.classList.contains("show")
+        ){
+            return;
+        }
+
+        const screenWidth =
+            window.innerWidth;
+
+        const horizontalDistance =
+            logoutSwipeEndX -
+            logoutSwipeStartX;
+
+        const verticalDistance =
+            logoutSwipeEndY -
+            logoutSwipeStartY;
+
+
+        /* IGNORE UP/DOWN MOVEMENT */
+        if(
+            Math.abs(verticalDistance) >
+            Math.abs(horizontalDistance)
+        ){
+            return;
+        }
+
+
+        /* LEFT EDGE → SWIPE RIGHT */
+        const swipedFromLeftEdge =
+            logoutSwipeStartX <=
+                logoutSwipeEdgeSize &&
+            horizontalDistance >=
+                logoutSwipeMinimumDistance;
+
+
+        /* RIGHT EDGE → SWIPE LEFT */
+        const swipedFromRightEdge =
+            logoutSwipeStartX >=
+                screenWidth -
+                logoutSwipeEdgeSize &&
+            horizontalDistance <=
+                -logoutSwipeMinimumDistance;
+
+
+        if(
+            swipedFromLeftEdge ||
+            swipedFromRightEdge
+        ){
+            closeLogoutSheetButton?.click();
+        }
+    },
+    {
+        passive:true
+    }
+);
+sheetBackdrop.addEventListener('click', function(){
+    if(logoutSheet.classList.contains('show')){
+        returnToMenuFromLogout();
+        return;
+    }
+
+    closeAllSheets();
+});
+
+/* DONATION CATEGORIES */
+donationCategoryButtons.forEach(function(button){
+    button.addEventListener('click', function(){
+        openDonationSheet(
+            button.dataset.category
+        );
+    });
+});
+
+
+/* IMAGE UPLOAD BUTTON */
+openUploadImagesButton.addEventListener(
+    'click',
+    openUploadImageSheet
+);
+
+/* PDF UPLOAD BUTTON */
+openUploadPdfButton.addEventListener(
+    'click',
+    openUploadPdfSheet
+);
+
+/* PHONE NUMBER */
+donorPhone.addEventListener('input', function(){
+    donorPhone.value =
+        donorPhone.value
+            .replace(/\D/g, '')
+            .slice(0, 10);
+});
+
+/* PHONEPE */
+amountType.addEventListener('change', function(){
+    if(amountType.value === 'PhonePe'){
+        phonePeScanner.classList.add('show');
+
+        setTimeout(function(){
+            phonePeScanner.scrollIntoView({
+                behavior:'smooth',
+                block:'nearest'
+            });
+        }, 100);
+
+    }else{
+        phonePeScanner.classList.remove('show');
+    }
+});
+
+/* SCANNER ERROR */
+scannerImage.addEventListener('error', function(){
+    scannerImage.hidden = true;
+    scannerError.hidden = false;
+});
+
+/* SELECT IMAGE */
+imageUploadInput.addEventListener('change', function(){
+
+    /*
+       Read the selected file first.
+       Do not clear the input before reading it.
+    */
+    const file = this.files && this.files[0];
+
+    if(!file){
+        resetImageUpload();
+        return;
+    }
+
+    /*
+       Reset only the old preview/status.
+       Keep the newly selected file in the input.
+    */
+    resetImageUpload(false);
+
+    if(!file.type.startsWith('image/')){
+
+        uploadStatus.classList.add('show');
+
+        uploadStatusText.style.color = '#c00000';
+
+        uploadStatusText.textContent =
+            'Please select an image file.';
+
+        imageUploadInput.value = '';
+        return;
+    }
+
+    const maximumSize = 2 * 1024 * 1024;
+
+    if(file.size > maximumSize){
+
+        uploadStatus.classList.add('show');
+
+        uploadStatusText.style.color = '#c00000';
+
+        uploadStatusText.textContent =
+            'Image size must be below 2 MB.';
+
+        imageUploadInput.value = '';
+        return;
+    }
+
+    selectedImageName = file.name;
+    selectedImageFile = file;
+
+    const reader = new FileReader();
+
+    reader.addEventListener('load', function(){
+
+        selectedImageData = reader.result;
+
+        uploadPreviewImage.src = reader.result;
+
+        uploadFileName.textContent =
+            'Selected image: ' + selectedImageName;
+
+        uploadPreview.classList.add('show');
+
+        uploadSelectedImageButton.disabled = false;
+
+        uploadStatus.classList.remove('show');
+
+        uploadedImageName.textContent = '';
+        uploadedImageName.classList.remove('show');
+    });
+
+    reader.addEventListener('error', function(){
+
+        resetImageUpload();
+
+        uploadStatus.classList.add('show');
+
+        uploadStatusText.style.color = '#c00000';
+
+        uploadStatusText.textContent =
+            'Unable to read the selected image.';
+    });
+
+    reader.readAsDataURL(file);
+});
+
+
+/* CANCEL IMAGE */
+cancelSelectedImageButton.addEventListener(
+    'click',
+    function(){
+
+        resetImageUpload();
+
+        uploadImageSheet.classList.remove('show');
+
+        setTimeout(function(){
+            openMenuSheet();
+        }, 150);
+    }
+);
+
+/* SELECT PDF */
+pdfUploadInput.addEventListener('change', function(){
+
+    const file = this.files && this.files[0];
+
+    if(!file){
+        resetPdfUpload();
+        return;
+    }
+
+    resetPdfUpload(false);
+
+    const isPdf =
+        file.type === 'application/pdf' ||
+        file.name.toLowerCase().endsWith('.pdf');
+
+    if(!isPdf){
+        pdfUploadStatus.classList.add('show');
+        pdfUploadStatusText.style.color = '#c00000';
+        pdfUploadStatusText.textContent =
+            'Please select a PDF file.';
+
+        pdfUploadInput.value = '';
+        return;
+    }
+
+    const maximumSize = 2 * 1024 * 1024;
+
+    if(file.size > maximumSize){
+        pdfUploadStatus.classList.add('show');
+        pdfUploadStatusText.style.color = '#c00000';
+        pdfUploadStatusText.textContent =
+            'PDF size must be below 2 MB.';
+
+        pdfUploadInput.value = '';
+        return;
+    }
+
+    selectedPdfName = file.name;
+    selectedPdfType = file.type || 'application/pdf';
+    selectedPdfFile = file;
+
+    pdfFileName.textContent =
+        'Selected PDF: ' + selectedPdfName;
+
+    pdfPreview.classList.add('show');
+    uploadSelectedPdfButton.disabled = false;
+    pdfUploadStatus.classList.remove('show');
+
+    const reader = new FileReader();
+
+    reader.addEventListener('load', function(){
+        selectedPdfData = reader.result;
+    });
+
+    reader.addEventListener('error', function(){
+        resetPdfUpload();
+
+        pdfUploadStatus.classList.add('show');
+        pdfUploadStatusText.style.color = '#c00000';
+        pdfUploadStatusText.textContent =
+            'Unable to read the selected PDF.';
+    });
+
+    reader.readAsDataURL(file);
+});
+
+/* KEEP PDF IN THIS PAGE SESSION ONLY */
+
+/* CANCEL PDF */
+cancelSelectedPdfButton.addEventListener(
+    'click',
+    function(){
+        resetPdfUpload();
+        uploadPdfSheet.classList.remove('show');
+
+        setTimeout(function(){
+            openMenuSheet();
+        }, 150);
+    }
+);
+
+/* PAYMENT PROOF RESET */
+function resetPaymentProof(clearFileInput = true){
+    selectedProofData = '';
+    selectedProofName = '';
+    selectedProofType = '';
+    selectedProofFile = null;
+
+    if(clearFileInput){
+        paymentProof.value = '';
+    }
+
+    proofPreview.classList.remove('show');
+
+    proofPreviewImage.hidden = true;
+    proofPreviewImage.removeAttribute('src');
+
+    proofFileName.textContent = '';
+}
+
+/* PAYMENT PROOF */
+paymentProof.addEventListener('change', function(){
+    const file = this.files && this.files[0];
+
+    if(!file){
+        resetPaymentProof();
+        return;
+    }
+
+    resetPaymentProof(false);
+
+    const maximumSize = 2 * 1024 * 1024;
+
+    if(file.size > maximumSize){
+        expenseMessage.style.color = '#c00000';
+
+        expenseMessage.textContent =
+            'Payment proof must be below 2 MB.';
+
+        return;
+    }
+
+    selectedProofName = file.name;
+    selectedProofType = file.type;
+    selectedProofFile = file;
+
+    proofFileName.textContent = file.name;
+    proofPreview.classList.add('show');
+
+    const reader = new FileReader();
+
+    reader.addEventListener('load', function(){
+        selectedProofData = reader.result;
+
+        if(file.type.startsWith('image/')){
+            proofPreviewImage.src = reader.result;
+            proofPreviewImage.hidden = false;
+        }
+    });
+
+    reader.readAsDataURL(file);
+});
+
+
+
+
+/* SAVE EXPENSE IN THIS PAGE SESSION ONLY */
+
+
+
+/* =========================================================
+   HOME 5-CARD FINANCIAL SUMMARY CAROUSEL
+   - Auto moves every 3 seconds
+   - No arrows
+   - Swipe / drag + dots for manual movement
+   - After card 5, card 1 appears instantly (no backward slide)
+========================================================= */
+const homeCarousel =
+    document.getElementById('homeCarousel');
+
+const carouselViewport =
+    document.getElementById('carouselViewport');
+
+const carouselTrack =
+    document.getElementById('carouselTrack');
+
+const carouselCards =
+    Array.from(
+        document.querySelectorAll('.home-card')
+    );
+
+const carouselDotsContainer =
+    document.getElementById('carouselDots');
+
+const chavithiDonationTotal =
+    document.getElementById('chavithiDonationTotal');
+
+const chavithiExpenseTotal =
+    document.getElementById('chavithiExpenseTotal');
+
+const santharpanaDonationTotal =
+    document.getElementById('santharpanaDonationTotal');
+
+const santharpanaExpenseTotal =
+    document.getElementById('santharpanaExpenseTotal');
+
+const totalExpenseTotal =
+    document.getElementById('totalExpenseTotal');
+
+let carouselIndex = 0;
+let carouselTimer = null;
+
+let homeCardTotals = [
+    0,
+    0,
+    0,
+    0,
+    0
+];
+
+let cardAmountStartTimer = null;
+let carouselPointerStartX = 0;
+let carouselPointerEndX = 0;
+let carouselDragging = false;
+
+function formatCardAmount(value){
+    return new Intl.NumberFormat('en-IN', {
+        maximumFractionDigits:2
+    }).format(Number(value) || 0);
+}
+
+
+/* =========================================================
+   ANIMATE ONLY CURRENT VISIBLE HOME CARD
+========================================================= */
+function animateCurrentHomeCard(){
+
+    if(cardAmountStartTimer){
+
+        clearTimeout(
+            cardAmountStartTimer
+        );
+
+        cardAmountStartTimer = null;
+    }
+
+    const currentCard =
+        carouselCards[carouselIndex];
+
+    if(!currentCard){
+        return;
+    }
+
+    const currentAmountElement =
+        currentCard.querySelector(
+            ".amount-value"
+        );
+
+    if(!currentAmountElement){
+        return;
+    }
+
+    const currentTotal =
+        homeCardTotals[carouselIndex] || 0;
+
+    /* START IMMEDIATELY — NO 0 DELAY */
+    animateCardAmount(
+        currentAmountElement,
+        currentTotal,
+        1400,
+        function(){
+
+            /* COUNTING FINISHED — NOW WAIT A LITTLE,
+               THEN OPEN NEXT CARD */
+
+            startCarouselTimer();
+        }
+    );
+}
+/* =========================================================
+   ANIMATE CARD AMOUNT FROM 0 TO FINAL TOTAL
+========================================================= */
+function animateCardAmount(
+    element,
+    finalValue,
+    duration = 1400,
+    onComplete = null
+){
+
+    if(!element){
+        return;
+    }
+
+    const targetValue =
+        Math.max(
+            0,
+            Number(finalValue) || 0
+        );
+
+    if(element.cardAmountAnimation){
+
+        cancelAnimationFrame(
+            element.cardAmountAnimation
+        );
+    }
+
+    const startTime =
+        performance.now();
+
+    element.textContent = "0";
+
+    function updateAmount(currentTime){
+
+        const elapsedTime =
+            currentTime - startTime;
+
+        const progress =
+            Math.min(
+                elapsedTime / duration,
+                1
+            );
+
+        const easedProgress =
+            1 - Math.pow(
+                1 - progress,
+                3
+            );
+
+        const currentValue =
+            targetValue * easedProgress;
+
+        element.textContent =
+            formatCardAmount(
+                Math.floor(currentValue)
+            );
+
+        if(progress < 1){
+
+            element.cardAmountAnimation =
+                requestAnimationFrame(
+                    updateAmount
+                );
+
+        }else{
+
+            element.textContent =
+                formatCardAmount(
+                    targetValue
+                );
+
+            element.cardAmountAnimation = null;
+
+            if(typeof onComplete === "function"){
+                onComplete();
+            }
+        }
+    }
+
+    element.cardAmountAnimation =
+        requestAnimationFrame(
+            updateAmount
+        );
+}
+
+async function updateSummaryCards(){
+
+    try{
+
+        /* Keep all cards at zero while loading */
+
+        chavithiDonationTotal.textContent = "0";
+        chavithiExpenseTotal.textContent = "0";
+        santharpanaDonationTotal.textContent = "0";
+        santharpanaExpenseTotal.textContent = "0";
+        totalExpenseTotal.textContent = "0";
+
+
+        /* =====================================================
+           FETCH ALL CARD TOTALS FROM SUPABASE
+        ===================================================== */
+
+       const [
+    chavithiDonationResult,
+    santharpanaDonationResult,
+    chavithiExpenseResult
+] = await Promise.all([
+
+    supabaseClient
+        .from("chavithi_donations")
+        .select("donation_amount"),
+
+    supabaseClient
+        .from("santharpana_donations")
+        .select("donation_amount"),
+
+   supabaseClient
+    .from("chavithi_expenses")
+    .select("*")
+]);
+
+
+        if(chavithiDonationResult.error){
+            throw chavithiDonationResult.error;
+        }
+
+        if(santharpanaDonationResult.error){
+            throw santharpanaDonationResult.error;
+        }
+
+        if(chavithiExpenseResult.error){
+            throw chavithiExpenseResult.error;
+        }
+
+       
+
+        /* =====================================================
+           CALCULATE TOTALS
+        ===================================================== */
+
+        const chavithiDonations =
+            (
+                chavithiDonationResult.data || []
+            ).reduce(function(total, item){
+
+                return total +
+                    Number(
+                        item.donation_amount || 0
+                    );
+
+            }, 0);
+
+
+        const santharpanaDonations =
+            (
+                santharpanaDonationResult.data || []
+            ).reduce(function(total, item){
+
+                return total +
+                    Number(
+                        item.donation_amount || 0
+                    );
+
+            }, 0);
+
+
+       
+
+const allExpenses =
+    chavithiExpenseResult.data || [];
+
+
+/* GET EXPENSE TYPE FROM AVAILABLE COLUMN */
+
+function getExpenseType(item){
+
+    return String(
+        item.expense_type ||
+        item.donation_type ||
+        item.expense_category ||
+        item.category ||
+        item.type ||
+        ""
+    )
+    .trim()
+    .toLowerCase();
+}
+
+
+/* CHAVITHI EXPENSES */
+
+const chavithiExpenses =
+    allExpenses
+        .filter(function(item){
+
+            const type =
+                getExpenseType(item);
+
+            return (
+                type.includes("chavithi") &&
+                !type.includes("santharpana")
+            );
+
+        })
+        .reduce(function(total, item){
+
+            return total +
+                Number(
+                    item.expense_amount ||
+                    item.amount ||
+                    0
+                );
+
+        }, 0);
+
+
+/* SANTHARPANA EXPENSES */
+
+const santharpanaExpenses =
+    allExpenses
+        .filter(function(item){
+
+            const type =
+                getExpenseType(item);
+
+            return type.includes(
+                "santharpana"
+            );
+
+        })
+        .reduce(function(total, item){
+
+            return total +
+                Number(
+                    item.expense_amount ||
+                    item.amount ||
+                    0
+                );
+
+        }, 0);
+
+
+/* ALL EXPENSES */
+
+const totalExpenses =
+    chavithiExpenses +
+    santharpanaExpenses;
+
+        
+
+
+        /* =====================================================
+           ANIMATE HOME-CARD AMOUNTS
+        ===================================================== */
+
+        /* SAVE TOTALS FOR EACH HOME CARD */
+
+homeCardTotals = [
+    chavithiDonations,
+    chavithiExpenses,
+    santharpanaDonations,
+    santharpanaExpenses,
+    totalExpenses
+];
+
+
+/* KEEP ALL CARDS AT ZERO UNTIL THEY APPEAR */
+
+carouselCards.forEach(
+    function(card){
+
+        const amountElement =
+            card.querySelector(
+                ".amount-value"
+            );
+
+        if(amountElement){
+
+            if(amountElement._amountAnimationFrame){
+
+                cancelAnimationFrame(
+                    amountElement._amountAnimationFrame
+                );
+            }
+
+            amountElement.textContent = "0";
+        }
+    }
+);
+
+
+/* ANIMATE FIRST CURRENTLY VISIBLE CARD */
+
+animateCurrentHomeCard();
+    }catch(error){
+
+        console.error(
+            "Unable to load home card totals:",
+            error
+        );
+
+        chavithiDonationTotal.textContent = "0";
+        chavithiExpenseTotal.textContent = "0";
+        santharpanaDonationTotal.textContent = "0";
+        santharpanaExpenseTotal.textContent = "0";
+        totalExpenseTotal.textContent = "0";
+    }
+}
+
+const carouselDots = carouselCards.map(
+    function(card, index){
+
+        const dot = document.createElement('button');
+
+        dot.type = 'button';
+        dot.className = 'carousel-dot';
+
+        dot.setAttribute(
+            'aria-label',
+            'Show card ' + (index + 1)
+        );
+
+        dot.addEventListener(
+            'click',
+            function(){
+                showCarouselCard(index, true);
+                restartCarouselTimer();
+            }
+        );
+
+        carouselDotsContainer.appendChild(dot);
+
+        return dot;
+    }
+);
+
+function updateCarouselDots(){
+    carouselDots.forEach(
+        function(dot, dotIndex){
+
+            dot.classList.toggle(
+                'active',
+                dotIndex === carouselIndex
+            );
+
+            dot.setAttribute(
+                'aria-current',
+                dotIndex === carouselIndex
+                    ? 'true'
+                    : 'false'
+            );
+        }
+    );
+}
+
+function showCarouselCard(index, animate = true){
+
+    if(!carouselCards.length){
+        return;
+    }
+
+    carouselIndex = Math.max(
+        0,
+        Math.min(index, carouselCards.length - 1)
+    );
+
+    if(!animate){
+        carouselTrack.classList.add('no-transition');
+    }
+
+    carouselTrack.style.transform =
+        'translateX(-' +
+        (carouselIndex * 100) +
+        '%)';
+
+    updateCarouselDots();
+animateCurrentHomeCard();
+    if(!animate){
+        void carouselTrack.offsetWidth;
+        carouselTrack.classList.remove('no-transition');
+    }
+}
+
+function nextCarouselCard(){
+    if(carouselIndex === carouselCards.length - 1){
+        showCarouselCard(0, false);
+        return;
+    }
+
+    showCarouselCard(carouselIndex + 1, true);
+}
+
+function previousCarouselCard(){
+    if(carouselIndex === 0){
+        showCarouselCard(carouselCards.length - 1, false);
+        return;
+    }
+
+    showCarouselCard(carouselIndex - 1, true);
+}
+
+function startCarouselTimer(){
+
+    clearTimeout(
+        carouselTimer
+    );
+
+    carouselTimer =
+        setTimeout(function(){
+
+            nextCarouselCard();
+
+        }, 2200);
+}
+
+function restartCarouselTimer(){
+    startCarouselTimer();
+}
+
+function completeCarouselManualMove(){
+
+    if(!carouselDragging){
+        return;
+    }
+
+    carouselDragging = false;
+
+    const moveDistance =
+        carouselPointerEndX -
+        carouselPointerStartX;
+
+    if(Math.abs(moveDistance) < 45){
+        startCarouselTimer();
+        return;
+    }
+
+    if(moveDistance < 0){
+        nextCarouselCard();
+    }else{
+        previousCarouselCard();
+    }
+
+    restartCarouselTimer();
+}
+
+carouselViewport.addEventListener(
+    'pointerdown',
+    function(event){
+        carouselDragging = true;
+        carouselPointerStartX = event.clientX;
+        carouselPointerEndX = event.clientX;
+        clearTimeout(carouselTimer);
+    }
+);
+
+carouselViewport.addEventListener(
+    'pointermove',
+    function(event){
+        if(!carouselDragging){
+            return;
+        }
+
+        carouselPointerEndX = event.clientX;
+    }
+);
+
+carouselViewport.addEventListener(
+    'pointerup',
+    function(event){
+        carouselPointerEndX = event.clientX;
+        completeCarouselManualMove();
+    }
+);
+
+carouselViewport.addEventListener(
+    'pointercancel',
+    function(){
+        carouselDragging = false;
+        startCarouselTimer();
+    }
+);
+
+carouselViewport.addEventListener(
+    'pointerleave',
+    function(event){
+        if(!carouselDragging){
+            return;
+        }
+
+        carouselPointerEndX = event.clientX;
+        completeCarouselManualMove();
+    }
+);
+
+/* Pause when browser tab is hidden */
+document.addEventListener(
+    'visibilitychange',
+    function(){
+
+        if(document.hidden){
+clearTimeout(carouselTimer);        }else{
+            startCarouselTimer();
+        }
+    }
+);
+
+showCarouselCard(0, false);
+
+initializeHomepage();
+updateSummaryCards();
+
+/* ESCAPE KEY */
+document.addEventListener('keydown', function(event){
+    if(event.key !== 'Escape'){
+        return;
+    }
+
+    if(logoutSheet.classList.contains('show')){
+        returnToMenuFromLogout();
+        return;
+    }
+
+    closeAllSheets();
+});
+
+/* OPEN LOGOUT CONFIRMATION */
+logoutButton.addEventListener(
+    'click',
+    openLogoutSheet
+);
+
+/* LOGOUT YES: CLEAR LOCAL LOGIN AND OPEN LOGIN PAGE */
+confirmLogoutButton.addEventListener('click', function(){
+    localStorage.removeItem('loginRole');
+    localStorage.removeItem('loggedInUser');
+    localStorage.removeItem('loggedInName');
+    localStorage.removeItem('loggedInUserId');
+
+    window.location.replace('index.html');
+});
+
+
+</script>
+
+</body>
+</html>

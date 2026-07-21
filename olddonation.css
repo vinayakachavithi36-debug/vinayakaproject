@@ -1,0 +1,614 @@
+/* ===========================
+   OLD DONATION POPUP
+   SAME STYLE AS CHAVITHI DONATION
+=========================== */
+
+.oldDonationBackdrop{
+    position:fixed;
+    inset:0;
+    z-index:9998;
+
+    background:rgba(0,0,0,.45);
+
+    opacity:0;
+    visibility:hidden;
+    pointer-events:none;
+
+    transition:
+        opacity .25s ease,
+        visibility .25s ease;
+}
+
+.oldDonationBackdrop.show{
+    opacity:1;
+    visibility:visible;
+    pointer-events:auto;
+}
+
+
+.oldDonationSheet{
+    position:fixed;
+    left:0;
+    bottom:0;
+    z-index:9999;
+
+    width:100%;
+    max-height:calc(
+        100dvh - env(safe-area-inset-top) - 8px
+    );
+
+    padding-top:55px;
+    padding-right:18px;
+    padding-bottom:calc(
+        25px + env(safe-area-inset-bottom)
+    );
+    padding-left:18px;
+
+    background:
+        linear-gradient(
+            180deg,
+            #fff8e8 0%,
+            #f6ead2 100%
+        );
+
+    border-top:1px solid #d4bd92;
+    border-radius:22px 22px 0 0;
+
+    overflow-x:hidden;
+    overflow-y:auto;
+
+    transform:translateY(105%);
+    visibility:hidden;
+    pointer-events:none;
+
+    box-shadow:0 -16px 42px rgba(35,30,20,.16);
+
+    transition:
+        transform .28s ease,
+        visibility .28s ease;
+}
+
+.oldDonationSheet.show{
+    transform:translateY(0);
+    visibility:visible;
+    pointer-events:auto;
+}
+
+
+/* SMALL TOP HANDLE */
+
+.oldDonationHandle{
+    position:absolute;
+    top:0;
+    left:50%;
+
+    width:54px;
+    height:4px;
+
+    background:#b98d48;
+    border-radius:0 0 999px 999px;
+
+    transform:translateX(-50%);
+}
+
+
+/* HEADER */
+
+.oldDonationHeader{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    width:100%;
+    margin-bottom:20px;
+}
+
+.oldDonationHeader h2{
+    margin:0;
+
+    color:#4a3928;
+
+    font-family:Arial,sans-serif;
+    font-size:21px;
+    font-weight:750;
+    text-align:center;
+}
+/* ==============================
+   OLD STYLE DATE WHEEL PICKER
+============================== */
+
+.oldDonationDateInput{
+    text-align:center;
+    cursor:pointer;
+    caret-color:transparent;
+    user-select:none;
+    -webkit-user-select:none;
+}
+
+.oldDonationDateInput::placeholder{
+    text-align:center;
+}
+
+
+/* OVERLAY */
+
+.oldDatePickerOverlay{
+    position:fixed;
+    inset:0;
+    z-index:10050;
+
+    display:flex;
+    align-items:flex-end;
+    justify-content:center;
+
+    background:rgba(0,0,0,.38);
+
+    opacity:0;
+    visibility:hidden;
+    pointer-events:none;
+
+    transition:
+        opacity .22s ease,
+        visibility .22s ease;
+}
+
+.oldDatePickerOverlay.show{
+    opacity:1;
+    visibility:visible;
+    pointer-events:auto;
+}
+
+
+/* PICKER SHEET */
+
+.oldDatePickerSheet{
+    width:100%;
+    max-width:600px;
+
+    padding-bottom:calc(
+        18px + env(safe-area-inset-bottom)
+    );
+
+    background:#f7f7f7;
+    border-radius:18px 18px 0 0;
+
+    transform:translateY(105%);
+    transition:transform .25s ease;
+
+    overflow:hidden;
+}
+
+.oldDatePickerOverlay.show .oldDatePickerSheet{
+    transform:translateY(0);
+}
+
+
+/* HEADER */
+
+.oldDatePickerHeader{
+    display:grid;
+    grid-template-columns:1fr auto 1fr;
+    align-items:center;
+
+    min-height:52px;
+    padding:0 15px;
+
+    background:#ffffff;
+    border-bottom:1px solid #d8d8d8;
+
+    font-family:Arial,sans-serif;
+}
+
+.oldDatePickerHeader strong{
+    color:#222222;
+    font-size:16px;
+    text-align:center;
+}
+
+.oldDatePickerHeader button{
+    padding:8px 2px;
+
+    background:transparent;
+    border:none;
+
+    font-family:Arial,sans-serif;
+    font-size:16px;
+
+    cursor:pointer;
+}
+
+.oldDatePickerCancel{
+    justify-self:start;
+    color:#666666;
+}
+
+.oldDatePickerDone{
+    justify-self:end;
+    color:#5c745f;
+    font-weight:700;
+}
+
+
+/* WHEELS */
+
+.oldDatePickerWheels{
+    position:relative;
+
+    display:grid;
+    grid-template-columns:.75fr 1.35fr 1fr;
+    gap:4px;
+
+    width:100%;
+    height:235px;
+    padding:22px 12px 15px;
+
+    background:
+        linear-gradient(
+            180deg,
+            #eeeeee 0%,
+            #ffffff 32%,
+            #ffffff 68%,
+            #eeeeee 100%
+        );
+}
+
+.oldDateWheelWrap{
+    position:relative;
+    z-index:2;
+
+    min-width:0;
+    text-align:center;
+}
+
+.oldDateWheelLabel{
+    margin-bottom:5px;
+
+    color:#888888;
+    font-family:Arial,sans-serif;
+    font-size:11px;
+    font-weight:600;
+    text-transform:uppercase;
+}
+
+
+/* SELECT WHEELS */
+
+.oldDateWheel{
+    width:100%;
+    height:170px;
+    padding:64px 0;
+
+    background:transparent;
+    border:none;
+    outline:none;
+
+    color:#222222;
+
+    font-family:Arial,sans-serif;
+    font-size:19px;
+    text-align:center;
+
+    overflow-y:auto;
+    scrollbar-width:none;
+
+    cursor:pointer;
+
+    appearance:none;
+    -webkit-appearance:none;
+
+    scroll-behavior:smooth;
+}
+
+.oldDateWheel::-webkit-scrollbar{
+    display:none;
+}
+
+.oldDateWheel option{
+    min-height:38px;
+    padding:8px 2px;
+
+    background:transparent;
+    color:#777777;
+
+    font-size:18px;
+    text-align:center;
+}
+
+.oldDateWheel option:checked{
+    background:transparent;
+    color:#111111;
+    font-weight:700;
+}
+
+
+/* CENTER SELECTED ROW */
+
+.oldDateSelectedLine{
+    position:absolute;
+    left:12px;
+    right:12px;
+    top:106px;
+    z-index:1;
+
+    height:42px;
+
+    border-top:1px solid rgba(0,0,0,.16);
+    border-bottom:1px solid rgba(0,0,0,.16);
+
+    background:rgba(255,255,255,.42);
+
+    pointer-events:none;
+}
+
+
+/* MOBILE */
+
+@media(max-width:600px){
+
+    .oldDatePickerWheels{
+        height:225px;
+        padding-right:7px;
+        padding-left:7px;
+    }
+
+    .oldDateWheel{
+        font-size:17px;
+    }
+
+    .oldDateWheel option{
+        font-size:17px;
+    }
+}
+
+/* CLOSE BUTTON */
+.oldDonationHeader button{
+    position:absolute;
+    top:15px;
+    right:18px;
+
+    width:28px;
+    height:28px;
+    padding:0;
+
+    background:transparent;
+    border:none;
+    border-radius:0;
+    box-shadow:none;
+
+    color:#4a4035;
+
+    font-family:Arial,sans-serif;
+    font-size:24px;
+    font-weight:400;
+    line-height:28px;
+
+    cursor:pointer;
+    -webkit-tap-highlight-color:transparent;
+}
+
+.oldDonationHeader button:hover{
+    background:transparent;
+    color:#000;
+}
+
+.oldDonationHeader button:active{
+    background:transparent;
+    transform:scale(.88);
+}
+
+.oldDonationDateInput{
+    text-align:center;
+    cursor:pointer;
+    user-select:none;
+    -webkit-user-select:none;
+    caret-color:transparent;
+}
+
+.oldDonationDateInput::placeholder{
+    text-align:center;
+    color:#9b968e;
+}
+
+/* BODY */
+
+.oldDonationBody{
+    width:100%;
+    overflow-y:auto;
+    padding:4px 2px 24px;
+
+    scrollbar-width:none;
+}
+
+.oldDonationBody::-webkit-scrollbar{
+    display:none;
+}
+
+
+/* LABELS */
+
+.oldDonationLabel{
+    display:block;
+    width:100%;
+
+    margin:0 0 7px;
+
+    color:#6a5037;
+
+    font-family:Arial,sans-serif;
+    font-size:13px;
+    font-weight:700;
+}
+
+
+/* INPUTS */
+
+.oldDonationInput,
+.oldDonationSelect,
+.oldDonationTextarea{
+    display:block;
+
+    width:100%;
+    min-width:0;
+    min-height:47px;
+
+    margin-bottom:15px;
+    padding:12px 13px;
+
+    background:#fffdf8;
+    border:1px solid #cdb894;
+    border-radius:11px;
+    outline:none;
+
+    color:#292724;
+
+    font-family:Arial,sans-serif;
+    font-size:15px;
+
+    box-shadow:none;
+
+    transition:
+        border-color .18s ease,
+        box-shadow .18s ease,
+        background .18s ease;
+
+    box-sizing:border-box;
+}
+
+.oldDonationInput::placeholder,
+.oldDonationTextarea::placeholder{
+    color:#9b968e;
+}
+
+.oldDonationInput:focus,
+.oldDonationSelect:focus,
+.oldDonationTextarea:focus{
+    background:#ffffff;
+    border-color:#9f7b43;
+
+    box-shadow:
+        0 0 0 3px rgba(159,123,67,.15);
+}
+.oldDonationSelect{
+    appearance:none;
+    -webkit-appearance:none;
+    -moz-appearance:none;
+
+    background-image:none;
+
+    cursor:pointer;
+}
+
+.oldDonationSavingSpinner{
+    position:relative;
+    display:block;
+    width:22px;
+    height:22px;
+    margin:auto;
+}
+
+.oldDonationSavingSpinner span{
+    position:absolute;
+    left:10px;
+    top:1px;
+    width:2.5px;
+    height:6px;
+    border-radius:999px;
+    background:#fff;
+    transform-origin:center 10px;
+    animation:oldDonationSavingSpinnerFade 1s linear infinite;
+}
+
+.oldDonationSavingSpinner span:nth-child(1){transform:rotate(0deg);animation-delay:-0.92s;}
+.oldDonationSavingSpinner span:nth-child(2){transform:rotate(30deg);animation-delay:-0.84s;}
+.oldDonationSavingSpinner span:nth-child(3){transform:rotate(60deg);animation-delay:-0.76s;}
+.oldDonationSavingSpinner span:nth-child(4){transform:rotate(90deg);animation-delay:-0.68s;}
+.oldDonationSavingSpinner span:nth-child(5){transform:rotate(120deg);animation-delay:-0.60s;}
+.oldDonationSavingSpinner span:nth-child(6){transform:rotate(150deg);animation-delay:-0.52s;}
+.oldDonationSavingSpinner span:nth-child(7){transform:rotate(180deg);animation-delay:-0.44s;}
+.oldDonationSavingSpinner span:nth-child(8){transform:rotate(210deg);animation-delay:-0.36s;}
+.oldDonationSavingSpinner span:nth-child(9){transform:rotate(240deg);animation-delay:-0.28s;}
+.oldDonationSavingSpinner span:nth-child(10){transform:rotate(270deg);animation-delay:-0.20s;}
+.oldDonationSavingSpinner span:nth-child(11){transform:rotate(300deg);animation-delay:-0.12s;}
+.oldDonationSavingSpinner span:nth-child(12){transform:rotate(330deg);animation-delay:-0.04s;}
+
+@keyframes oldDonationSavingSpinnerFade{
+    0%{opacity:1;}
+    100%{opacity:.15;}
+}
+.oldDonationTextarea{
+    min-height:92px;
+    resize:vertical;
+    line-height:1.5;
+}
+
+
+/* SAVE BUTTON */
+
+.oldDonationSaveBtn{
+    display:block;
+
+    width:100%;
+    min-height:49px;
+
+    margin-top:22px;
+    padding:13px 18px;
+
+    background:#5c745f;
+    border:1px solid #5c745f;
+    border-radius:11px;
+
+    color:#ffffff;
+
+    font-family:Arial,sans-serif;
+    font-size:15px;
+    font-weight:750;
+
+    box-shadow:
+        0 9px 20px rgba(63,88,67,.24);
+
+    cursor:pointer;
+
+    transition:
+        background .18s ease,
+        transform .18s ease,
+        box-shadow .18s ease;
+}
+
+.oldDonationSaveBtn:hover{
+    background:#4f6752;
+    border-color:#4f6752;
+}
+
+.oldDonationSaveBtn:active{
+    background:#435946;
+    transform:scale(.985);
+}
+
+.oldDonationSaveBtn:disabled{
+    opacity:.6;
+    cursor:not-allowed;
+}
+
+
+/* MOBILE */
+
+@media(max-width:768px){
+
+    .oldDonationSheet{
+        padding-top:58px;
+        padding-right:16px;
+        padding-left:16px;
+
+        border-radius:22px 22px 0 0;
+    }
+
+    .oldDonationHeader h2{
+        font-size:19px;
+    }
+
+    .oldDonationInput,
+    .oldDonationSelect,
+    .oldDonationTextarea{
+        font-size:14px;
+    }
+}
