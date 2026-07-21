@@ -22,13 +22,36 @@ function openOldDonationPopup(){
 
     hideServiceSheetsForApproval();
 
-    oldDonationBackdrop.classList.add("show");
-    oldDonationSheet.classList.add("show");
-oldDonationSheet.setAttribute(
-    "aria-hidden",
-    "false"
-);
-    document.body.style.overflow="hidden";
+    oldDonationBackdrop.classList.add(
+        "show"
+    );
+
+    oldDonationSheet.classList.add(
+        "show"
+    );
+
+    oldDonationSheet.setAttribute(
+        "aria-hidden",
+        "false"
+    );
+
+    document.documentElement.style.overflow =
+        "hidden";
+
+    document.body.style.overflow =
+        "hidden";
+
+    document.documentElement.style.touchAction =
+        "auto";
+
+    document.body.style.touchAction =
+        "auto";
+
+    oldDonationBackdrop.style.touchAction =
+        "auto";
+
+    oldDonationSheet.style.touchAction =
+        "auto";
 }
 function closeOldDonationPopup(){
 
@@ -45,10 +68,28 @@ function closeOldDonationPopup(){
         "true"
     );
 
-    document.body.style.overflow = "";
+    document.documentElement.style.overflow =
+        "";
+
+    document.body.style.overflow =
+        "";
+
+    document.documentElement.style.touchAction =
+        "";
+
+    document.body.style.touchAction =
+        "";
+
+    oldDonationBackdrop.style.touchAction =
+        "";
+
+    oldDonationSheet.style.touchAction =
+        "";
 
     setTimeout(function(){
+
         openMenuSheet();
+
     }, 150);
 }
 
@@ -65,17 +106,24 @@ closeOldDonationSheet?.addEventListener(
    OLD DONATION SHEET — EDGE SWIPE TO SERVICE MENU
 ========================================================= */
 
+
+/* =========================================================
+   OLD DONATION SHEET — EDGE SWIPE TO SERVICE MENU
+========================================================= */
+
 let oldDonationSwipeStartX = 0;
 let oldDonationSwipeStartY = 0;
 let oldDonationSwipeEndX = 0;
 let oldDonationSwipeEndY = 0;
 
-const oldDonationSwipeEdgeSize = 35;
+let oldDonationSwipeTracking = false;
+
+const oldDonationSwipeEdgeSize = 45;
 const oldDonationSwipeMinimumDistance = 80;
 
 
 /* TOUCH START */
-oldDonationSheet?.addEventListener(
+oldDonationBackdrop?.addEventListener(
     "touchstart",
     function(event){
 
@@ -83,11 +131,32 @@ oldDonationSheet?.addEventListener(
             !oldDonationSheet.classList.contains("show") ||
             event.touches.length !== 1
         ){
+            oldDonationSwipeTracking = false;
             return;
         }
 
         const touch =
             event.touches[0];
+
+        const screenWidth =
+            window.innerWidth;
+
+        const startedFromLeftEdge =
+            touch.clientX <=
+            oldDonationSwipeEdgeSize;
+
+        const startedFromRightEdge =
+            touch.clientX >=
+            screenWidth -
+            oldDonationSwipeEdgeSize;
+
+        oldDonationSwipeTracking =
+            startedFromLeftEdge ||
+            startedFromRightEdge;
+
+        if(!oldDonationSwipeTracking){
+            return;
+        }
 
         oldDonationSwipeStartX =
             touch.clientX;
@@ -108,11 +177,12 @@ oldDonationSheet?.addEventListener(
 
 
 /* TOUCH MOVE */
-oldDonationSheet?.addEventListener(
+oldDonationBackdrop?.addEventListener(
     "touchmove",
     function(event){
 
         if(
+            !oldDonationSwipeTracking ||
             !oldDonationSheet.classList.contains("show") ||
             event.touches.length !== 1
         ){
@@ -135,13 +205,15 @@ oldDonationSheet?.addEventListener(
 
 
 /* TOUCH END */
-oldDonationSheet?.addEventListener(
+oldDonationBackdrop?.addEventListener(
     "touchend",
     function(){
 
         if(
+            !oldDonationSwipeTracking ||
             !oldDonationSheet.classList.contains("show")
         ){
+            oldDonationSwipeTracking = false;
             return;
         }
 
@@ -156,8 +228,10 @@ oldDonationSheet?.addEventListener(
             oldDonationSwipeEndY -
             oldDonationSwipeStartY;
 
+        oldDonationSwipeTracking = false;
 
-        /* IGNORE UP/DOWN FORM SCROLL */
+
+        /* Ignore vertical form scrolling */
         if(
             Math.abs(verticalDistance) >
             Math.abs(horizontalDistance)
@@ -166,7 +240,7 @@ oldDonationSheet?.addEventListener(
         }
 
 
-        /* LEFT EDGE → SWIPE RIGHT */
+        /* Left edge → swipe right */
         const swipedFromLeftEdge =
             oldDonationSwipeStartX <=
                 oldDonationSwipeEdgeSize &&
@@ -174,7 +248,7 @@ oldDonationSheet?.addEventListener(
                 oldDonationSwipeMinimumDistance;
 
 
-        /* RIGHT EDGE → SWIPE LEFT */
+        /* Right edge → swipe left */
         const swipedFromRightEdge =
             oldDonationSwipeStartX >=
                 screenWidth -
@@ -187,17 +261,27 @@ oldDonationSheet?.addEventListener(
             swipedFromLeftEdge ||
             swipedFromRightEdge
         ){
-            closeOldDonationSheet?.click();
+            closeOldDonationPopup();
         }
     },
     {
         passive:true
     }
 );
+
+
+/* BACKDROP TAP CLOSE */
 oldDonationBackdrop?.addEventListener(
     "click",
-    closeOldDonationPopup
+    function(event){
+
+        if(event.target === oldDonationBackdrop){
+            closeOldDonationPopup();
+        }
+    }
 );
+
+       
 document.addEventListener("DOMContentLoaded", function(){
 
     const dateInput =
