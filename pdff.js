@@ -1117,7 +1117,23 @@ pdf.text(
         Math.max(currentDownloadProgress, 94)
     );
 
+   if (
+    window.AndroidPdfDownloader &&
+    typeof window.AndroidPdfDownloader.savePdf === "function"
+) {
+
+    const pdfBase64 =
+        pdf.output("datauristring");
+
+    window.AndroidPdfDownloader.savePdf(
+        pdfBase64,
+        fileName
+    );
+
+} else {
+
     pdf.save(fileName);
+}
 }
 
 
