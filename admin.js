@@ -1146,7 +1146,8 @@ Object.assign(adminImageSheet.style,{
 const adminImageSheetClose = document.createElement('button');
 
 adminImageSheetClose.type = 'button';
-
+adminImageSheetClose.id =
+    'closeAdminImageSheet';
 adminImageSheetClose.innerHTML =
     '<i class="fa-solid fa-xmark"></i>';
 
@@ -1237,7 +1238,7 @@ const adminImageSwipeMinimumDistance = 80;
 
 
 /* TOUCH START */
-adminImageSheet.addEventListener(
+adminImageBackdrop.addEventListener(
     'touchstart',
     function(event){
 
@@ -1271,7 +1272,7 @@ adminImageSheet.addEventListener(
 
 
 /* TOUCH MOVE */
-adminImageSheet.addEventListener(
+adminImageBackdrop.addEventListener(
     'touchmove',
     function(event){
 
@@ -1299,7 +1300,7 @@ adminImageSheet.addEventListener(
 
 
 /* TOUCH END */
-adminImageSheet.addEventListener(
+adminImageBackdrop.addEventListener(
     'touchend',
     function(){
 
@@ -2420,7 +2421,8 @@ const adminPdfSheetClose =
     document.createElement('button');
 
 adminPdfSheetClose.type = 'button';
-
+adminPdfSheetClose.id =
+    'closeAdminPdfSheet';
 
 adminPdfSheetClose.innerHTML =
     '<i class="fa-solid fa-xmark"></i>';
@@ -2507,7 +2509,11 @@ function openAdminPdfSheet(pdfUrl){
 
     adminPdfBackdrop.style.display = 'flex';
 
-    document.body.style.overflow = 'hidden';
+    document.documentElement.style.overflow =
+    'hidden';
+
+document.body.style.overflow =
+    'hidden';
 }
 
 
@@ -2523,7 +2529,11 @@ function closeAdminPdfSheet(){
 
     currentAdminPdfUrl = '';
 
-    document.body.style.overflow = '';
+   document.documentElement.style.overflow =
+    '';
+
+document.body.style.overflow =
+    '';
 }
 
 
@@ -2549,7 +2559,7 @@ const adminPdfSwipeMinimumDistance = 80;
 
 
 /* TOUCH START */
-adminPdfSheet.addEventListener(
+adminPdfBackdrop.addEventListener(
     'touchstart',
     function(event){
 
@@ -2583,7 +2593,7 @@ adminPdfSheet.addEventListener(
 
 
 /* TOUCH MOVE */
-adminPdfSheet.addEventListener(
+adminPdfBackdrop.addEventListener(
     'touchmove',
     function(event){
 
@@ -2611,7 +2621,7 @@ adminPdfSheet.addEventListener(
 
 
 /* TOUCH END */
-adminPdfSheet.addEventListener(
+adminPdfBackdrop.addEventListener(
     'touchend',
     function(){
 
@@ -2687,7 +2697,7 @@ adminPdfBackdrop.addEventListener(
 
 /* PREVENT SHEET CLICK FROM CLOSING */
 
-adminPdfSheet.addEventListener(
+adminPdfBackdrop.addEventListener(
     'click',
     function(event){
         event.stopPropagation();
@@ -3447,12 +3457,15 @@ showAdminCategory('chavithi');
 
         /* CLOSE ADMIN PAGE */
 
-        adminCloseBtn.addEventListener(
+      adminCloseBtn.addEventListener(
     'click',
     function(){
 
         adminAccessPage.style.display =
             'none';
+
+        document.documentElement.style.overflow =
+            '';
 
         document.body.style.overflow =
             '';
@@ -3469,6 +3482,7 @@ showAdminCategory('chavithi');
         }, 150);
     }
 );
+
 /* =========================================================
    ADMIN ACCESS PAGE — EDGE SWIPE TO SERVICE MENU
 ========================================================= */
@@ -3478,8 +3492,10 @@ let adminPageSwipeStartY = 0;
 let adminPageSwipeEndX = 0;
 let adminPageSwipeEndY = 0;
 
-const adminPageSwipeEdgeSize = 35;
-const adminPageSwipeMinimumDistance = 80;
+let adminPageSwipeTracking = false;
+
+const adminPageSwipeEdgeSize = 50;
+const adminPageSwipeMinimumDistance = 75;
 
 
 /* TOUCH START */
@@ -3487,36 +3503,38 @@ adminAccessPage.addEventListener(
     'touchstart',
     function(event){
 
-        /*
-         Do not close the main page while its
-         image or PDF bottom sheet is open.
-        */
         if(
-            adminImageBackdrop.style.display ===
-                'flex' ||
-            adminPdfBackdrop.style.display ===
-                'flex' ||
-            adminAccessPage.style.display !==
-                'flex' ||
+            adminImageBackdrop.style.display === 'flex' ||
+            adminPdfBackdrop.style.display === 'flex' ||
+            adminAccessPage.style.display !== 'flex' ||
             event.touches.length !== 1
         ){
+            adminPageSwipeTracking = false;
             return;
         }
 
-        const touch =
-            event.touches[0];
+        const touch = event.touches[0];
+        const screenWidth = window.innerWidth;
 
-        adminPageSwipeStartX =
-            touch.clientX;
+        const fromLeftEdge =
+            touch.clientX <= adminPageSwipeEdgeSize;
 
-        adminPageSwipeStartY =
-            touch.clientY;
+        const fromRightEdge =
+            touch.clientX >=
+            screenWidth - adminPageSwipeEdgeSize;
 
-        adminPageSwipeEndX =
-            touch.clientX;
+        adminPageSwipeTracking =
+            fromLeftEdge || fromRightEdge;
 
-        adminPageSwipeEndY =
-            touch.clientY;
+        if(!adminPageSwipeTracking){
+            return;
+        }
+
+        adminPageSwipeStartX = touch.clientX;
+        adminPageSwipeStartY = touch.clientY;
+
+        adminPageSwipeEndX = touch.clientX;
+        adminPageSwipeEndY = touch.clientY;
     },
     {
         passive:true
@@ -3530,25 +3548,19 @@ adminAccessPage.addEventListener(
     function(event){
 
         if(
-            adminImageBackdrop.style.display ===
-                'flex' ||
-            adminPdfBackdrop.style.display ===
-                'flex' ||
-            adminAccessPage.style.display !==
-                'flex' ||
+            !adminPageSwipeTracking ||
+            adminImageBackdrop.style.display === 'flex' ||
+            adminPdfBackdrop.style.display === 'flex' ||
+            adminAccessPage.style.display !== 'flex' ||
             event.touches.length !== 1
         ){
             return;
         }
 
-        const touch =
-            event.touches[0];
+        const touch = event.touches[0];
 
-        adminPageSwipeEndX =
-            touch.clientX;
-
-        adminPageSwipeEndY =
-            touch.clientY;
+        adminPageSwipeEndX = touch.clientX;
+        adminPageSwipeEndY = touch.clientY;
     },
     {
         passive:true
@@ -3562,18 +3574,16 @@ adminAccessPage.addEventListener(
     function(){
 
         if(
-            adminImageBackdrop.style.display ===
-                'flex' ||
-            adminPdfBackdrop.style.display ===
-                'flex' ||
-            adminAccessPage.style.display !==
-                'flex'
+            !adminPageSwipeTracking ||
+            adminImageBackdrop.style.display === 'flex' ||
+            adminPdfBackdrop.style.display === 'flex' ||
+            adminAccessPage.style.display !== 'flex'
         ){
+            adminPageSwipeTracking = false;
             return;
         }
 
-        const screenWidth =
-            window.innerWidth;
+        const screenWidth = window.innerWidth;
 
         const horizontalDistance =
             adminPageSwipeEndX -
@@ -3583,8 +3593,10 @@ adminAccessPage.addEventListener(
             adminPageSwipeEndY -
             adminPageSwipeStartY;
 
+        adminPageSwipeTracking = false;
 
-        /* IGNORE NORMAL UP/DOWN SCROLL */
+
+        /* Ignore vertical page scrolling */
         if(
             Math.abs(verticalDistance) >
             Math.abs(horizontalDistance)
@@ -3593,7 +3605,7 @@ adminAccessPage.addEventListener(
         }
 
 
-        /* LEFT EDGE → SWIPE RIGHT */
+        /* Left edge → swipe right */
         const swipedFromLeftEdge =
             adminPageSwipeStartX <=
                 adminPageSwipeEdgeSize &&
@@ -3601,7 +3613,7 @@ adminAccessPage.addEventListener(
                 adminPageSwipeMinimumDistance;
 
 
-        /* RIGHT EDGE → SWIPE LEFT */
+        /* Right edge → swipe left */
         const swipedFromRightEdge =
             adminPageSwipeStartX >=
                 screenWidth -
@@ -3621,6 +3633,22 @@ adminAccessPage.addEventListener(
         passive:true
     }
 );
+
+
+/* CANCEL */
+adminAccessPage.addEventListener(
+    'touchcancel',
+    function(){
+
+        adminPageSwipeTracking = false;
+
+    },
+    {
+        passive:true
+    }
+);
+
+
     }
 
 
@@ -3652,7 +3680,11 @@ adminAccessPage.addEventListener(
         adminAccessPage.style.display = 'flex';
         adminAccessPage.scrollTop = 0;
 
-        document.body.style.overflow = 'hidden';
+        document.documentElement.style.overflow =
+    'hidden';
+
+document.body.style.overflow =
+    'hidden';
 
     });
 
