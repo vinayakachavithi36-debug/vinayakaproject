@@ -4435,64 +4435,116 @@ closeMenuSheetButton.addEventListener(
    MENU SHEET — LEFT/RIGHT EDGE SWIPE TO CLOSE
 ========================================================= */
 
+
+/* =========================================================
+   MENU SHEET — EDGE SWIPE TO CLOSE
+========================================================= */
+
 let menuSwipeStartX = 0;
 let menuSwipeStartY = 0;
 let menuSwipeEndX = 0;
 let menuSwipeEndY = 0;
 
-const menuSwipeEdgeSize = 35;
-const menuSwipeMinimumDistance = 80;
+let menuSwipeTracking = false;
+
+const menuSwipeEdgeSize = 55;
+const menuSwipeMinimumDistance = 70;
 
 
 /* TOUCH START */
-menuSheet.addEventListener(
+
+document.addEventListener(
     'touchstart',
     function(event){
 
-        if(!menuSheet.classList.contains('show')){
+        if(
+            !menuSheet.classList.contains('show') ||
+            event.touches.length !== 1
+        ){
+            menuSwipeTracking = false;
             return;
         }
 
-        const touch = event.touches[0];
+        const touch =
+            event.touches[0];
 
-        menuSwipeStartX = touch.clientX;
-        menuSwipeStartY = touch.clientY;
+        const screenWidth =
+            window.innerWidth;
 
-        menuSwipeEndX = touch.clientX;
-        menuSwipeEndY = touch.clientY;
+        const startedFromLeft =
+            touch.clientX <= menuSwipeEdgeSize;
+
+        const startedFromRight =
+            touch.clientX >=
+            screenWidth - menuSwipeEdgeSize;
+
+        menuSwipeTracking =
+            startedFromLeft || startedFromRight;
+
+        if(!menuSwipeTracking){
+            return;
+        }
+
+        menuSwipeStartX =
+            touch.clientX;
+
+        menuSwipeStartY =
+            touch.clientY;
+
+        menuSwipeEndX =
+            touch.clientX;
+
+        menuSwipeEndY =
+            touch.clientY;
     },
     {
-        passive:true
+        passive:true,
+        capture:true
     }
 );
 
 
 /* TOUCH MOVE */
-menuSheet.addEventListener(
+
+document.addEventListener(
     'touchmove',
     function(event){
 
-        if(!menuSheet.classList.contains('show')){
+        if(
+            !menuSwipeTracking ||
+            !menuSheet.classList.contains('show') ||
+            event.touches.length !== 1
+        ){
             return;
         }
 
-        const touch = event.touches[0];
+        const touch =
+            event.touches[0];
 
-        menuSwipeEndX = touch.clientX;
-        menuSwipeEndY = touch.clientY;
+        menuSwipeEndX =
+            touch.clientX;
+
+        menuSwipeEndY =
+            touch.clientY;
     },
     {
-        passive:true
+        passive:true,
+        capture:true
     }
 );
 
 
 /* TOUCH END */
-menuSheet.addEventListener(
+
+document.addEventListener(
     'touchend',
     function(){
 
-        if(!menuSheet.classList.contains('show')){
+        if(
+            !menuSwipeTracking ||
+            !menuSheet.classList.contains('show')
+        ){
+            menuSwipeTracking = false;
             return;
         }
 
@@ -4500,13 +4552,18 @@ menuSheet.addEventListener(
             window.innerWidth;
 
         const horizontalDistance =
-            menuSwipeEndX - menuSwipeStartX;
+            menuSwipeEndX -
+            menuSwipeStartX;
 
         const verticalDistance =
-            menuSwipeEndY - menuSwipeStartY;
+            menuSwipeEndY -
+            menuSwipeStartY;
+
+        menuSwipeTracking = false;
 
 
-        /* IGNORE VERTICAL SCROLL */
+        /* Ignore normal vertical scrolling */
+
         if(
             Math.abs(verticalDistance) >
             Math.abs(horizontalDistance)
@@ -4515,16 +4572,21 @@ menuSheet.addEventListener(
         }
 
 
-        /* LEFT EDGE → SWIPE RIGHT */
+        /* Left edge → swipe right */
+
         const swipedFromLeftEdge =
-            menuSwipeStartX <= menuSwipeEdgeSize &&
-            horizontalDistance >= menuSwipeMinimumDistance;
+            menuSwipeStartX <=
+                menuSwipeEdgeSize &&
+            horizontalDistance >=
+                menuSwipeMinimumDistance;
 
 
-        /* RIGHT EDGE → SWIPE LEFT */
+        /* Right edge → swipe left */
+
         const swipedFromRightEdge =
             menuSwipeStartX >=
-                screenWidth - menuSwipeEdgeSize &&
+                screenWidth -
+                menuSwipeEdgeSize &&
             horizontalDistance <=
                 -menuSwipeMinimumDistance;
 
@@ -4537,9 +4599,27 @@ menuSheet.addEventListener(
         }
     },
     {
-        passive:true
+        passive:true,
+        capture:true
     }
 );
+
+
+/* TOUCH CANCEL */
+
+document.addEventListener(
+    'touchcancel',
+    function(){
+
+        menuSwipeTracking = false;
+    },
+    {
+        passive:true,
+        capture:true
+    }
+);
+
+
 
 /* DONATION CROSS: RETURN TO SERVICE MENU */
 closeDonationSheetButton.addEventListener(
