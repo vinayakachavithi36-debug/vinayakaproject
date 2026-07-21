@@ -46,14 +46,15 @@ openDownloadPdfButton?.addEventListener("click", function(){
 /* =========================================================
    CLOSE DOWNLOAD PDF SHEET
 ========================================================= */
-
 function closeDownloadPdfSheet(){
 
     stopDownloadProgress();
 
-    downloadPdfSheet.classList.remove(
-        "show"
-    );
+    if(document.activeElement instanceof HTMLElement){
+        document.activeElement.blur();
+    }
+
+    downloadPdfSheet.classList.remove("show");
 
     downloadPdfSheet.setAttribute(
         "aria-hidden",
@@ -63,10 +64,14 @@ function closeDownloadPdfSheet(){
     resetDownloadPdfSheet();
 
     setTimeout(function(){
+
+        /* Ensure download sheet is fully closed */
+        downloadPdfSheet.classList.remove("show");
+
         openMenuSheet();
+
     }, 150);
 }
-
 closeDownloadPdfButton?.addEventListener(
     "click",
     closeDownloadPdfSheet
@@ -198,7 +203,7 @@ downloadPdfSheet?.addEventListener(
             swipedFromLeftEdge ||
             swipedFromRightEdge
         ){
-            closeDownloadPdfButton?.click();
+            closeDownloadPdfSheet();
         }
     },
     {
