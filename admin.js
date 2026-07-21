@@ -1871,9 +1871,35 @@ async function deleteAdminRecord(
         /*
          Reload selected category.
         */
+/* Remove deleted row/card immediately */
+const deletedItem =
+    deleteButton.closest('[data-admin-search]');
 
-        await loadAdminCategoryData(categoryId);
-        await loadAllAdminSummaries();
+if(deletedItem){
+    deletedItem.style.transition =
+        'opacity .2s ease, transform .2s ease';
+
+    deletedItem.style.opacity = '0';
+    deletedItem.style.transform = 'scale(.98)';
+
+    setTimeout(function(){
+        deletedItem.remove();
+
+        const remainingItems =
+            adminContent.querySelectorAll(
+                '[data-admin-search]'
+            );
+
+        if(remainingItems.length === 0){
+            showAdminMessage(
+                'No records found'
+            );
+        }
+    }, 200);
+}
+
+/* Refresh only top summary numbers */
+await loadAllAdminSummaries();
 
     }
     catch(error){
@@ -3494,96 +3520,118 @@ let adminPageSwipeEndY = 0;
 
 let adminPageSwipeTracking = false;
 
-const adminPageSwipeEdgeSize = 50;
-const adminPageSwipeMinimumDistance = 75;
+const adminPageSwipeEdgeSize = 55;
+const adminPageSwipeMinimumDistance = 70;
 
 
 /* TOUCH START */
-adminAccessPage.addEventListener(
+
+document.addEventListener(
     'touchstart',
     function(event){
 
         if(
+            adminAccessPage.style.display !== 'flex' ||
             adminImageBackdrop.style.display === 'flex' ||
             adminPdfBackdrop.style.display === 'flex' ||
-            adminAccessPage.style.display !== 'flex' ||
             event.touches.length !== 1
         ){
             adminPageSwipeTracking = false;
             return;
         }
 
-        const touch = event.touches[0];
-        const screenWidth = window.innerWidth;
+        const touch =
+            event.touches[0];
 
-        const fromLeftEdge =
-            touch.clientX <= adminPageSwipeEdgeSize;
+        const screenWidth =
+            window.innerWidth;
 
-        const fromRightEdge =
+        const startedFromLeft =
+            touch.clientX <=
+            adminPageSwipeEdgeSize;
+
+        const startedFromRight =
             touch.clientX >=
-            screenWidth - adminPageSwipeEdgeSize;
+            screenWidth -
+            adminPageSwipeEdgeSize;
 
         adminPageSwipeTracking =
-            fromLeftEdge || fromRightEdge;
+            startedFromLeft ||
+            startedFromRight;
 
         if(!adminPageSwipeTracking){
             return;
         }
 
-        adminPageSwipeStartX = touch.clientX;
-        adminPageSwipeStartY = touch.clientY;
+        adminPageSwipeStartX =
+            touch.clientX;
 
-        adminPageSwipeEndX = touch.clientX;
-        adminPageSwipeEndY = touch.clientY;
+        adminPageSwipeStartY =
+            touch.clientY;
+
+        adminPageSwipeEndX =
+            touch.clientX;
+
+        adminPageSwipeEndY =
+            touch.clientY;
     },
     {
-        passive:true
+        passive:true,
+        capture:true
     }
 );
 
 
 /* TOUCH MOVE */
-adminAccessPage.addEventListener(
+
+document.addEventListener(
     'touchmove',
     function(event){
 
         if(
             !adminPageSwipeTracking ||
+            adminAccessPage.style.display !== 'flex' ||
             adminImageBackdrop.style.display === 'flex' ||
             adminPdfBackdrop.style.display === 'flex' ||
-            adminAccessPage.style.display !== 'flex' ||
             event.touches.length !== 1
         ){
             return;
         }
 
-        const touch = event.touches[0];
+        const touch =
+            event.touches[0];
 
-        adminPageSwipeEndX = touch.clientX;
-        adminPageSwipeEndY = touch.clientY;
+        adminPageSwipeEndX =
+            touch.clientX;
+
+        adminPageSwipeEndY =
+            touch.clientY;
     },
     {
-        passive:true
+        passive:true,
+        capture:true
     }
 );
 
 
 /* TOUCH END */
-adminAccessPage.addEventListener(
+
+document.addEventListener(
     'touchend',
     function(){
 
         if(
             !adminPageSwipeTracking ||
+            adminAccessPage.style.display !== 'flex' ||
             adminImageBackdrop.style.display === 'flex' ||
-            adminPdfBackdrop.style.display === 'flex' ||
-            adminAccessPage.style.display !== 'flex'
+            adminPdfBackdrop.style.display === 'flex'
         ){
             adminPageSwipeTracking = false;
             return;
         }
 
-        const screenWidth = window.innerWidth;
+        const screenWidth =
+            window.innerWidth;
 
         const horizontalDistance =
             adminPageSwipeEndX -
@@ -3596,7 +3644,8 @@ adminAccessPage.addEventListener(
         adminPageSwipeTracking = false;
 
 
-        /* Ignore vertical page scrolling */
+        /* Ignore normal vertical scrolling */
+
         if(
             Math.abs(verticalDistance) >
             Math.abs(horizontalDistance)
@@ -3606,6 +3655,7 @@ adminAccessPage.addEventListener(
 
 
         /* Left edge → swipe right */
+
         const swipedFromLeftEdge =
             adminPageSwipeStartX <=
                 adminPageSwipeEdgeSize &&
@@ -3614,6 +3664,7 @@ adminAccessPage.addEventListener(
 
 
         /* Right edge → swipe left */
+
         const swipedFromRightEdge =
             adminPageSwipeStartX >=
                 screenWidth -
@@ -3630,24 +3681,25 @@ adminAccessPage.addEventListener(
         }
     },
     {
-        passive:true
+        passive:true,
+        capture:true
     }
 );
 
 
-/* CANCEL */
-adminAccessPage.addEventListener(
+/* TOUCH CANCEL */
+
+document.addEventListener(
     'touchcancel',
     function(){
 
         adminPageSwipeTracking = false;
-
     },
     {
-        passive:true
+        passive:true,
+        capture:true
     }
 );
-
 
     }
 
