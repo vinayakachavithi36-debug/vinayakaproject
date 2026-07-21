@@ -4265,8 +4265,7 @@ function getTodayDate(){
 
 /* HIDE ALL SHEETS */
 function hideAllSheets(){
-    menuSheet.classList.remove('show');
-    donationSheet.classList.remove('show');
+    
     expenseSheet.classList.remove('show');
     uploadImageSheet.classList.remove('show');
     uploadPdfSheet.classList.remove('show');
@@ -4592,11 +4591,11 @@ document.addEventListener(
 
 
         if(
-            swipedFromLeftEdge ||
-            swipedFromRightEdge
-        ){
-            closeMenuSheetButton.click();
-        }
+    swipedFromLeftEdge ||
+    swipedFromRightEdge
+){
+    closeAllSheets();
+}
     },
     {
         passive:true,
