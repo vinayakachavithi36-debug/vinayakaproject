@@ -2525,21 +2525,42 @@ document.body.appendChild(adminPdfBackdrop);
 function openAdminPdfSheet(pdfUrl){
 
     if(!pdfUrl){
-        console.warn('PDF URL is missing');
+
+        console.warn("PDF URL is missing");
         return;
     }
 
     currentAdminPdfUrl = pdfUrl;
 
+
+    /* ANDROID APP:
+       Open PDF using Android PDF viewer */
+
+    const isAndroid =
+        /Android/i.test(
+            navigator.userAgent
+        );
+
+    if(isAndroid){
+
+        window.location.href = pdfUrl;
+        return;
+    }
+
+
+    /* NORMAL BROWSER:
+       Show PDF inside popup */
+
     adminPdfFrame.src = pdfUrl;
 
-    adminPdfBackdrop.style.display = 'flex';
+    adminPdfBackdrop.style.display =
+        "flex";
 
     document.documentElement.style.overflow =
-    'hidden';
+        "hidden";
 
-document.body.style.overflow =
-    'hidden';
+    document.body.style.overflow =
+        "hidden";
 }
 
 
