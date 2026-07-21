@@ -4263,20 +4263,30 @@ function getTodayDate(){
     return year + '-' + month + '-' + day;
 }
 
-/* HIDE ALL SHEETS */
 function hideAllSheets(){
-    
-    expenseSheet.classList.remove('show');
-    uploadImageSheet.classList.remove('show');
-    uploadPdfSheet.classList.remove('show');
-    logoutSheet.classList.remove('show');
 
-    menuSheet.setAttribute('aria-hidden', 'true');
-    donationSheet.setAttribute('aria-hidden', 'true');
-    expenseSheet.setAttribute('aria-hidden', 'true');
-    uploadImageSheet.setAttribute('aria-hidden', 'true');
-    uploadPdfSheet.setAttribute('aria-hidden', 'true');
-    logoutSheet.setAttribute('aria-hidden', 'true');
+    /* Remove focus before hiding */
+    if(document.activeElement instanceof HTMLElement){
+        document.activeElement.blur();
+    }
+
+    /* Close every bottom sheet */
+    menuSheet.classList.remove("show");
+    donationSheet.classList.remove("show");
+    expenseSheet.classList.remove("show");
+    uploadImageSheet.classList.remove("show");
+    uploadPdfSheet.classList.remove("show");
+    logoutSheet.classList.remove("show");
+downloadPdfSheet?.classList.remove("show");
+    /* Accessibility state */
+    menuSheet.setAttribute("aria-hidden", "true");
+    donationSheet.setAttribute("aria-hidden", "true");
+    expenseSheet.setAttribute("aria-hidden", "true");
+    uploadImageSheet.setAttribute("aria-hidden", "true");
+    uploadPdfSheet.setAttribute("aria-hidden", "true");
+    logoutSheet.setAttribute("aria-hidden", "true");
+    downloadPdfSheet?.setAttribute("aria-hidden", "true");
+
 }
 
 /* OPEN MENU */
@@ -6135,7 +6145,71 @@ showCarouselCard(0, false);
 
 initializeHomepage();
 updateSummaryCards();
+/* =========================================================
+   LIVE HOME-CARD TOTAL UPDATES
+   Updates automatically from every mobile
+========================================================= */
 
+let homeCardLiveUpdateTimer = null;
+
+function refreshHomeCardsLive(){
+
+    clearTimeout(homeCardLiveUpdateTimer);
+
+    homeCardLiveUpdateTimer = setTimeout(function(){
+
+        console.log("Live database change detected");
+
+        updateSummaryCards();
+
+    }, 250);
+}
+
+
+supabaseClient
+    .channel("homepage-card-live-totals")
+
+    /* Chavithi donations */
+    .on(
+        "postgres_changes",
+        {
+            event:"*",
+            schema:"public",
+            table:"chavithi_donations"
+        },
+        refreshHomeCardsLive
+    )
+
+    /* Santharpana donations */
+    .on(
+        "postgres_changes",
+        {
+            event:"*",
+            schema:"public",
+            table:"santharpana_donations"
+        },
+        refreshHomeCardsLive
+    )
+
+    /* Expenses */
+    .on(
+        "postgres_changes",
+        {
+            event:"*",
+            schema:"public",
+            table:"chavithi_expenses"
+        },
+        refreshHomeCardsLive
+    )
+
+    .subscribe(function(status){
+
+        console.log(
+            "Home cards realtime status:",
+            status
+        );
+
+    });
 /* ESCAPE KEY */
 document.addEventListener('keydown', function(event){
     if(event.key !== 'Escape'){
