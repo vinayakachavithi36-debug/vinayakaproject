@@ -307,15 +307,27 @@ if (!selectedDonationTable) {
 if (!allowedDonationTables.includes(selectedDonationTable)) {
     throw new Error("Invalid donation table selected.");
 }
-
-const { error } = await window.supabaseClient
+const { data, error } = await window.supabaseClient
     .from(selectedDonationTable)
-    .insert([donationData]);
+    .insert([donationData])
+    .select()
+    .single();
 
             if (error) {
                 throw error;
             }
-
+console.log("Donation saved successfully:", data);
+if (
+    window.AndroidPrinter &&
+    typeof window.AndroidPrinter.printDonationReceipt === "function"
+) {
+    window.AndroidPrinter.printDonationReceipt(
+        JSON.stringify({
+            donation_table: selectedDonationTable,
+            ...data
+        })
+    );
+}
             saveBtn.innerHTML = `
                 <span class="btnSuccessTick"></span>
                 
@@ -363,4 +375,3 @@ const { error } = await window.supabaseClient
         }
     }
 })();
-
