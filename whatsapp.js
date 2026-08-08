@@ -54,12 +54,12 @@
             gap:12px;
 
             min-height:calc(
-    64px + 30px +
+    64px + 39px +
     env(safe-area-inset-top)
 );
 
 padding-top:calc(
-    30px +
+    39px +
     env(safe-area-inset-top)
 );
 
@@ -78,17 +78,47 @@ padding-top:calc(
             align-items:center;
             justify-content:center;
 
-            width:42px;
-            height:42px;
+            width:40px;
+            height:40px;
             padding:0;
 
-            background:#f2f3f3;
-            border:none;
-            border-radius:50%;
+            background:#ffffff;
+            border:1px solid #e5e7eb;
+            border-radius:12px;
 
             color:#111111;
-            font-size:25px;
             cursor:pointer;
+
+            box-shadow:
+                0 3px 10px rgba(0,0,0,.06);
+
+            transition:
+                transform .16s ease,
+                background .16s ease,
+                box-shadow .16s ease;
+        }
+
+        .whatsappDonationBack svg{
+            width:20px;
+            height:20px;
+            display:block;
+
+            fill:none;
+            stroke:currentColor;
+            stroke-width:2.2;
+            stroke-linecap:round;
+            stroke-linejoin:round;
+        }
+
+        .whatsappDonationBack:hover{
+            background:#f7f7f7;
+            box-shadow:
+                0 5px 14px rgba(0,0,0,.08);
+        }
+
+        .whatsappDonationBack:active{
+            transform:scale(.94);
+            background:#f1f1f1;
         }
 
         .whatsappDonationHeaderText{
@@ -446,7 +476,13 @@ padding-top:calc(
                 id="whatsappDonationBack"
                 aria-label="Back"
             >
-                <
+                <svg
+                    viewBox="0 0 24 24"
+                    aria-hidden="true"
+                    focusable="false"
+                >
+                    <path d="M15 18l-6-6 6-6"></path>
+                </svg>
             </button>
 
             <div class="whatsappDonationHeaderText">
@@ -941,6 +977,17 @@ function renderWhatsAppDonations(
                 ''
             );
 
+        const additionalInformation =
+            getDonationField(
+                record,
+                [
+                    'additional_information',
+                    'additional_info',
+                    'information'
+                ],
+                ''
+            );
+
         const statusKey =
             donationTable +
             ':' +
@@ -1054,7 +1101,8 @@ function renderWhatsAppDonations(
                     donorMobile,
                     donationAmount,
                     paymentType,
-                    donationDate
+                    donationDate,
+                    additionalInformation
                 });
             }
         );
@@ -1167,6 +1215,8 @@ async function sendDonationToWhatsApp(details){
 
 
         const message = [
+            'శ్రీ వరసిద్ధి వినాయక ఉత్సవ కమిటీ - చివటం',
+            '',
             `Namaste ${details.donorName},`,
             '',
             `Thank you for your ${donationType}.`,
@@ -1178,8 +1228,12 @@ async function sendDonationToWhatsApp(details){
                     details.donationDate
                 )}`
                 : '',
+            details.additionalInformation
+                ? String(details.additionalInformation).trim()
+                : '',
             '',
-            'Sri Varasidhi Vinayakha Utsava Committee'
+            'Thank you',
+            'జై గణేశ్'
         ]
         .filter(function(line){
             return line !== '';
