@@ -29,6 +29,67 @@ let downloadPdfMessageTimer = null;
 let currentDownloadProgress = 0;
 
 
+/* =========================================================
+   PDF TYPES — SAME SEPARATE CATEGORIES AS ADMIN
+========================================================= */
+function setupSeparatedPdfTypes(){
+
+    if(!downloadPdfType){
+        return;
+    }
+
+    const currentValue =
+        downloadPdfType.value || "";
+
+    downloadPdfType.innerHTML = `
+        <option value="">Select PDF</option>
+
+        <option value="chavithi_donations">
+            Chavithi Donations
+        </option>
+
+        <option value="santharpana_donations">
+            Santharpana Donations
+        </option>
+
+        <option value="chavithi_expenses">
+            Chavithi Expenses
+        </option>
+
+        <option value="santharpana_expenses">
+            Santharpana Expenses
+        </option>
+
+        <option value="old_chavithi_donations">
+            Old Chavithi Donations
+        </option>
+
+        <option value="old_santharpana_donations">
+            Old Santharpana Donations
+        </option>
+
+        <option value="old_chavithi_expenses">
+            Old Chavithi Expenses
+        </option>
+
+        <option value="old_santharpana_expenses">
+            Old Santharpana Expenses
+        </option>
+    `;
+
+    if(
+        Array.from(downloadPdfType.options)
+            .some(option => option.value === currentValue)
+    ){
+        downloadPdfType.value =
+            currentValue;
+    }
+}
+
+
+setupSeparatedPdfTypes();
+
+
 function showDownloadPdfMessage(
     message,
     color = "#475569",
@@ -511,7 +572,9 @@ downloadSelectedPdfButton?.addEventListener(
                     "donation_date"
                 );
 
-            }else if(selectedType === "expenses"){
+            }else if(
+                selectedType === "chavithi_expenses"
+            ){
 
                 await downloadTablePdf(
                     "chavithi_expenses",
@@ -519,29 +582,114 @@ downloadSelectedPdfButton?.addEventListener(
                     `Chavithi expense records for ${selectedYear}`,
                     `chavithi-expenses-${selectedYear}.pdf`,
                     selectedYear,
-                    "expense_date"
+                    "expense_date",
+                    {
+                        fields:[
+                            "expense_type"
+                        ],
+                        type:"chavithi"
+                    }
                 );
 
-            }else if(selectedType === "old_donations"){
+            }else if(
+                selectedType === "santharpana_expenses"
+            ){
+
+                await downloadTablePdf(
+                    "chavithi_expenses",
+                    "Santharpana Expenses Report",
+                    `Santharpana expense records for ${selectedYear}`,
+                    `santharpana-expenses-${selectedYear}.pdf`,
+                    selectedYear,
+                    "expense_date",
+                    {
+                        fields:[
+                            "expense_type"
+                        ],
+                        type:"santharpana"
+                    }
+                );
+
+            }else if(
+                selectedType === "old_chavithi_donations"
+            ){
 
                 await downloadTablePdf(
                     "olddonation",
-                    "Old Donations Report",
-                    `Old donation records for ${selectedYear}`,
-                    `old-donations-${selectedYear}.pdf`,
+                    "Old Chavithi Donations Report",
+                    `Old Chavithi donation records for ${selectedYear}`,
+                    `old-chavithi-donations-${selectedYear}.pdf`,
                     selectedYear,
-                    "donation_date"
+                    "donation_date",
+                    {
+                        fields:[
+                            "donation_type",
+                            "donation_category",
+                            "category",
+                            "type"
+                        ],
+                        type:"chavithi"
+                    }
                 );
 
-            }else if(selectedType === "old_expenses"){
+            }else if(
+                selectedType === "old_santharpana_donations"
+            ){
+
+                await downloadTablePdf(
+                    "olddonation",
+                    "Old Santharpana Donations Report",
+                    `Old Santharpana donation records for ${selectedYear}`,
+                    `old-santharpana-donations-${selectedYear}.pdf`,
+                    selectedYear,
+                    "donation_date",
+                    {
+                        fields:[
+                            "donation_type",
+                            "donation_category",
+                            "category",
+                            "type"
+                        ],
+                        type:"santharpana"
+                    }
+                );
+
+            }else if(
+                selectedType === "old_chavithi_expenses"
+            ){
 
                 await downloadTablePdf(
                     "old_expenses",
-                    "Old Expenses Report",
-                    `Old expense records for ${selectedYear}`,
-                    `old-expenses-${selectedYear}.pdf`,
+                    "Old Chavithi Expenses Report",
+                    `Old Chavithi expense records for ${selectedYear}`,
+                    `old-chavithi-expenses-${selectedYear}.pdf`,
                     selectedYear,
-                    "expense_date"
+                    "expense_date",
+                    {
+                        fields:[
+                            "donation_type"
+                        ],
+                        type:"chavithi"
+                    }
+                );
+
+            }else if(
+                selectedType === "old_santharpana_expenses"
+            ){
+
+                await downloadTablePdf(
+                    "old_expenses",
+                    "Old Santharpana Expenses Report",
+                    `Old Santharpana expense records for ${selectedYear}`,
+                    `old-santharpana-expenses-${selectedYear}.pdf`,
+                    selectedYear,
+                    "expense_date",
+                    {
+                        fields:[
+                            "donation_type"
+                        ],
+                        type:"santharpana"
+                    }
                 );
             }
 
@@ -609,7 +757,8 @@ async function downloadTablePdf(
     pdfSubHeading,
     fileName,
     selectedYear,
-    dateColumn
+    dateColumn,
+    filterConfig = null
 ){
 
     if(
@@ -634,7 +783,7 @@ async function downloadTablePdf(
     const yearEnd =
         `${selectedYear + 1}-01-01`;
 
-    const { data, error } =
+    let { data, error } =
         await supabaseClient
             .from(tableName)
             .select("*")
@@ -655,6 +804,75 @@ async function downloadTablePdf(
 
     if(error){
         throw error;
+    }
+
+    /*
+     * Split shared database tables into the same categories
+     * used by admin.js.
+     */
+    if(
+        filterConfig &&
+        Array.isArray(data)
+    ){
+
+        const filterFields =
+            Array.isArray(filterConfig.fields)
+                ? filterConfig.fields
+                : [];
+
+        const expectedType =
+            String(
+                filterConfig.type || ""
+            )
+                .trim()
+                .toLowerCase();
+
+        data = data.filter(function(record){
+
+            let rawValue = "";
+
+            for(
+                const fieldName of filterFields
+            ){
+
+                const possibleValue =
+                    record?.[fieldName];
+
+                if(
+                    possibleValue !== null &&
+                    possibleValue !== undefined &&
+                    String(possibleValue).trim()
+                ){
+                    rawValue =
+                        String(possibleValue);
+
+                    break;
+                }
+            }
+
+            const value =
+                rawValue
+                    .trim()
+                    .toLowerCase();
+
+            if(expectedType === "chavithi"){
+
+                return (
+                    value.includes("chavithi") ||
+                    value.includes("చవితి")
+                );
+            }
+
+            if(expectedType === "santharpana"){
+
+                return (
+                    value.includes("santharpana") ||
+                    value.includes("సంతర్పణ")
+                );
+            }
+
+            return true;
+        });
     }
 
     if(!data || data.length === 0){
