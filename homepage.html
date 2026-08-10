@@ -971,7 +971,7 @@ textarea.form-control{
     .upload-action-btn{
         min-height:45px;
         padding:10px 6px;
-        font-size:13px;
+        font-size:16px;
     }
 }
 
@@ -1067,7 +1067,7 @@ textarea.form-control{
         );
 
         padding:6px 11px;
-        font-size:14px;
+        font-size:18px;
     }
 
     .home-title{
@@ -2923,6 +2923,109 @@ html.admin-mode .user-language-btn{
     }
 }
 
+
+/* =========================================================
+   HOME LIVE MOVING DONATION LINE
+   Same logic as login page, placed above home cards
+========================================================= */
+.home-moving-line{
+    position:absolute;
+    left:0;
+    right:0;
+    bottom:calc(215px + env(safe-area-inset-bottom));
+    z-index:7;
+
+    width:100%;
+    height:58px;
+
+    overflow:hidden;
+    pointer-events:none;
+
+    display:none;
+}
+
+.home-moving-track{
+    height:100%;
+
+    display:inline-flex;
+    align-items:center;
+    gap:12px;
+
+    white-space:nowrap;
+
+    transform:translateX(100vw);
+    will-change:transform;
+}
+
+.home-moving-line.ready .home-moving-track{
+    animation:homeMoveDonationRightToLeft 10s linear infinite;
+}
+
+@keyframes homeMoveDonationRightToLeft{
+    from{
+        transform:translateX(100vw);
+    }
+
+    to{
+        transform:translateX(-100%);
+    }
+}
+
+.home-moving-img{
+    width:60px;
+    height:60px;
+
+    object-fit:contain;
+    flex-shrink:0;
+}
+
+.home-moving-text{
+    color:#ffd700;
+
+    font-family:Arial,sans-serif;
+    font-size:19px;
+    font-weight:900;
+    letter-spacing:.4px;
+
+    text-shadow:
+        0 2px 5px rgba(0,0,0,.80),
+        0 0 8px rgba(0,0,0,.55);
+}
+
+@media(max-width:768px){
+
+    .home-moving-line{
+        bottom:calc(185px + env(safe-area-inset-bottom));
+        height:56px;
+    }
+
+    .home-moving-img{
+        width:56px;
+        height:56px;
+    }
+
+    .home-moving-text{
+        font-size:14px;
+    }
+}
+
+@media(max-width:380px){
+
+    .home-moving-line{
+        bottom:calc(172px + env(safe-area-inset-bottom));
+        height:50px;
+    }
+
+    .home-moving-img{
+        width:50px;
+        height:50px;
+    }
+
+    .home-moving-text{
+        font-size:13px;
+    }
+}
+
 </style>
  <link rel="stylesheet" href="photos.css">
  <link rel="stylesheet" href="pdf.css">
@@ -3404,6 +3507,35 @@ html.admin-mode .user-language-btn{
         <span>శ్రీ వరసిద్ధి వినాయక</span>
         <span>ఉత్సవ కమిటీ</span>
     </h1>
+
+    <!-- LIVE MOVING DONATIONS — ABOVE HOME CARDS -->
+    <div
+        class="home-moving-line"
+        id="homeMovingDonationLine"
+        aria-hidden="true"
+    >
+        <div
+            class="home-moving-track"
+            id="homeMovingDonationTrack"
+        >
+            <img
+                src="mouse.png"
+                class="home-moving-img"
+                alt=""
+            >
+
+            <span
+                class="home-moving-text"
+                id="homeMovingDonationText"
+            ></span>
+
+            <img
+                src="mouse2.png"
+                class="home-moving-img"
+                alt=""
+            >
+        </div>
+    </div>
 
     <!-- 5-CARD FINANCIAL SUMMARY CAROUSEL -->
     <section
@@ -8707,6 +8839,285 @@ confirmLogoutButton.addEventListener('click', function(){
     );
 
 })();
+
+/* =========================================================
+   HOME LIVE MOVING DONATIONS
+   TABLE: moving_donations
+   CACHE + REALTIME + INSTANT UPDATE
+========================================================= */
+(function setupHomeMovingDonations(){
+
+    const movingLine =
+        document.getElementById(
+            "homeMovingDonationLine"
+        );
+
+    const movingText =
+        document.getElementById(
+            "homeMovingDonationText"
+        );
+
+    if(
+        !movingLine ||
+        !movingText ||
+        !window.supabaseClient
+    ){
+        return;
+    }
+
+    const db =
+        window.supabaseClient;
+
+    const CACHE_KEY =
+        "movingDonationsCache";
+
+    let realtimeChannel = null;
+
+
+    function formatPrice(value){
+
+        const price =
+            Number(value);
+
+        if(!Number.isFinite(price)){
+            return "0";
+        }
+
+        return new Intl.NumberFormat(
+            "en-IN",
+            {
+                maximumFractionDigits:2
+            }
+        ).format(price);
+    }
+
+
+    function createTickerText(data){
+
+        if(!Array.isArray(data)){
+            return "";
+        }
+
+        return data
+            .filter(function(item){
+
+                return (
+                    item &&
+                    String(
+                        item.name || ""
+                    ).trim()
+                );
+            })
+            .map(function(item){
+
+                const name =
+                    String(
+                        item.name || ""
+                    ).trim();
+
+                const price =
+                    formatPrice(
+                        item.price
+                    );
+
+                return (
+                    `${name} ${price} ||`
+                );
+            })
+            .join(" ");
+    }
+
+
+    function displayMovingDonations(data){
+
+        const text =
+            createTickerText(data);
+
+        if(!text){
+
+            movingText.textContent = "";
+
+            movingLine
+                .classList
+                .remove("ready");
+
+            movingLine.style.display =
+                "none";
+
+            return;
+        }
+
+        /*
+         * If the same database data returns,
+         * keep the current animation running.
+         */
+        if(
+            movingText.textContent === text &&
+            movingLine.classList.contains(
+                "ready"
+            )
+        ){
+            return;
+        }
+
+        movingText.textContent =
+            text;
+
+        movingLine.style.display =
+            "block";
+
+        /*
+         * Restart only when actual ticker
+         * content changes.
+         */
+        movingLine.classList.remove(
+            "ready"
+        );
+
+        void movingLine.offsetWidth;
+
+        movingLine.classList.add(
+            "ready"
+        );
+    }
+
+
+    function loadCachedMovingDonations(){
+
+        try{
+
+            const cached =
+                localStorage.getItem(
+                    CACHE_KEY
+                );
+
+            if(!cached){
+                return;
+            }
+
+            displayMovingDonations(
+                JSON.parse(cached)
+            );
+
+        }catch(error){
+
+            localStorage.removeItem(
+                CACHE_KEY
+            );
+        }
+    }
+
+
+    async function loadMovingDonations(){
+
+        try{
+
+            const {
+                data,
+                error
+            } = await db
+                .from("moving_donations")
+                .select(
+                    "id, name, price, created_at"
+                )
+                .order(
+                    "id",
+                    {
+                        ascending:true
+                    }
+                );
+
+            if(error){
+                throw error;
+            }
+
+            const rows =
+                Array.isArray(data)
+                    ? data
+                    : [];
+
+            localStorage.setItem(
+                CACHE_KEY,
+                JSON.stringify(rows)
+            );
+
+            displayMovingDonations(
+                rows
+            );
+
+        }catch(error){
+
+            console.error(
+                "Homepage moving donations load error:",
+                error
+            );
+        }
+    }
+
+
+    function startRealtime(){
+
+        if(realtimeChannel){
+
+            db.removeChannel(
+                realtimeChannel
+            );
+
+            realtimeChannel = null;
+        }
+
+        realtimeChannel =
+            db
+                .channel(
+                    "homepage-moving-donations-live"
+                )
+                .on(
+                    "postgres_changes",
+                    {
+                        event:"*",
+                        schema:"public",
+                        table:"moving_donations"
+                    },
+                    function(){
+
+                        /*
+                         * INSERT / UPDATE / DELETE:
+                         * refresh immediately.
+                         */
+                        loadMovingDonations();
+                    }
+                )
+                .subscribe();
+    }
+
+
+    /*
+     * Show cached data instantly,
+     * then start realtime,
+     * then fetch fresh database rows.
+     */
+    loadCachedMovingDonations();
+    startRealtime();
+    loadMovingDonations();
+
+
+    window.addEventListener(
+        "beforeunload",
+        function(){
+
+            if(realtimeChannel){
+
+                db.removeChannel(
+                    realtimeChannel
+                );
+
+                realtimeChannel = null;
+            }
+        }
+    );
+
+})();
+
 </script>
 
 </body>
