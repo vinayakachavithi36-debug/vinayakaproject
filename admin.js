@@ -460,6 +460,21 @@ function calculateAdminSummary(records,categoryId){
 
     let amount = 0;
 
+    /*
+     * Expense summaries are split separately:
+     *
+     * Current Expenses:
+     *   record.expense_type
+     *
+     * Old Expenses:
+     *   record.donation_type
+     */
+    let chavithiExpenseAmount = 0;
+    let santharpanaExpenseAmount = 0;
+
+    let chavithiExpenseCount = 0;
+    let santharpanaExpenseCount = 0;
+
     safeRecords.forEach(function(record){
 
         let amountValue = 0;
@@ -485,12 +500,73 @@ function calculateAdminSummary(records,categoryId){
         if(Number.isFinite(parsedAmount)){
             amount += parsedAmount;
         }
+
+        if(
+            categoryId === 'expenses' ||
+            categoryId === 'oldExpenses'
+        ){
+
+            const rawExpenseType =
+                categoryId === 'expenses'
+                    ? record.expense_type
+                    : record.donation_type;
+
+            const expenseType =
+                String(rawExpenseType || '')
+                    .trim()
+                    .toLowerCase();
+
+            /*
+             * Works with values such as:
+             * Chavithi Donations
+             * Chavithi Donation
+             * Chavithi
+             * చవితి
+             *
+             * and:
+             * Santharpana Donations
+             * Santharpana Donation
+             * Santharpana
+             * సంతర్పణ
+             */
+            const isChavithi =
+                expenseType.includes('chavithi') ||
+                expenseType.includes('చవితి');
+
+            const isSantharpana =
+                expenseType.includes('santharpana') ||
+                expenseType.includes('santharpana') ||
+                expenseType.includes('సంతర్పణ');
+
+            if(isChavithi){
+
+                chavithiExpenseCount++;
+
+                if(Number.isFinite(parsedAmount)){
+                    chavithiExpenseAmount += parsedAmount;
+                }
+            }
+            else if(isSantharpana){
+
+                santharpanaExpenseCount++;
+
+                if(Number.isFinite(parsedAmount)){
+                    santharpanaExpenseAmount += parsedAmount;
+                }
+            }
+        }
     });
 
     return {
         count:safeRecords.length,
         donors:safeRecords.length,
-        amount:amount
+        amount:amount,
+
+        chavithiExpenseCount:chavithiExpenseCount,
+        chavithiExpenseAmount:chavithiExpenseAmount,
+
+        santharpanaExpenseCount:santharpanaExpenseCount,
+        santharpanaExpenseAmount:santharpanaExpenseAmount
     };
 }
 
@@ -520,9 +596,18 @@ function renderPermanentAdminSummary(categoryId,summary){
         categoryId === 'expenses' ||
         categoryId === 'oldExpenses'
     ){
+        /*
+         * Do not combine Expenses into one total.
+         * Show Chavithi and Santharpana separately in the
+         * permanent summary card above the table.
+         */
         lines.innerHTML =
-            `Entries : ${formatAdminCount(summary.count)}<br>` +
-            `Amount : ${formatAdminMoney(summary.amount)}`;
+            `Chavithi Expense : ${formatAdminMoney(
+                summary.chavithiExpenseAmount
+            )}<br>` +
+            `Santharpana Expense : ${formatAdminMoney(
+                summary.santharpanaExpenseAmount
+            )}`;
     }
     else if(categoryId === 'events'){
         lines.textContent =
