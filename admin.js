@@ -185,16 +185,28 @@ const adminCategories = [
         title:'Santharpana Donations'
     },
     {
-        id:'expenses',
-        title:'Expenses'
+        id:'chavithiExpenses',
+        title:'Chavithi Expenses'
     },
     {
-        id:'oldDonations',
-        title:'Old Donations'
+        id:'santharpanaExpenses',
+        title:'Santharpana Expenses'
     },
     {
-        id:'oldExpenses',
-        title:'Old Expenses'
+        id:'oldChavithiDonations',
+        title:'Old Chavithi Donations'
+    },
+    {
+        id:'oldSantharpanaDonations',
+        title:'Old Santharpana Donations'
+    },
+    {
+        id:'oldChavithiExpenses',
+        title:'Old Chavithi Expenses'
+    },
+    {
+        id:'oldSantharpanaExpenses',
+        title:'Old Santharpana Expenses'
     },
     {
         id:'events',
@@ -358,20 +370,32 @@ function getAdminSummaryShortTitle(categoryId){
         return 'Santharpana';
     }
 
-    if(categoryId === 'oldDonations'){
-        return 'Old Donations';
+    if(categoryId === 'chavithiExpenses'){
+        return 'Chavithi Expenses';
     }
 
-    if(categoryId === 'oldExpenses'){
-        return 'Old Expenses';
+    if(categoryId === 'santharpanaExpenses'){
+        return 'Santharpana Expenses';
+    }
+
+    if(categoryId === 'oldChavithiDonations'){
+        return 'Old Chavithi Donations';
+    }
+
+    if(categoryId === 'oldSantharpanaDonations'){
+        return 'Old Santharpana Donations';
+    }
+
+    if(categoryId === 'oldChavithiExpenses'){
+        return 'Old Chavithi Expenses';
+    }
+
+    if(categoryId === 'oldSantharpanaExpenses'){
+        return 'Old Santharpana Expenses';
     }
 
     if(categoryId === 'events'){
         return 'Events';
-    }
-
-    if(categoryId === 'expenses'){
-        return 'Expenses';
     }
 
     if(categoryId === 'images'){
@@ -392,6 +416,7 @@ function getAdminSummaryShortTitle(categoryId){
 
     return '';
 }
+
 
 function createAdminSummaryItem(category){
 
@@ -460,32 +485,22 @@ function calculateAdminSummary(records,categoryId){
 
     let amount = 0;
 
-    /*
-     * Expense summaries are split separately:
-     *
-     * Current Expenses:
-     *   record.expense_type
-     *
-     * Old Expenses:
-     *   record.donation_type
-     */
-    let chavithiExpenseAmount = 0;
-    let santharpanaExpenseAmount = 0;
-
-    let chavithiExpenseCount = 0;
-    let santharpanaExpenseCount = 0;
-
     safeRecords.forEach(function(record){
 
         let amountValue = 0;
 
         if(
-            categoryId === 'expenses' ||
-            categoryId === 'oldExpenses'
+            categoryId === 'chavithiExpenses' ||
+            categoryId === 'santharpanaExpenses' ||
+            categoryId === 'oldChavithiExpenses' ||
+            categoryId === 'oldSantharpanaExpenses'
         ){
             amountValue = record.expense_amount;
         }
-        else if(categoryId === 'oldDonations'){
+        else if(
+            categoryId === 'oldChavithiDonations' ||
+            categoryId === 'oldSantharpanaDonations'
+        ){
             amountValue = record.amount;
         }
         else if(categoryId === 'sponsors'){
@@ -500,73 +515,12 @@ function calculateAdminSummary(records,categoryId){
         if(Number.isFinite(parsedAmount)){
             amount += parsedAmount;
         }
-
-        if(
-            categoryId === 'expenses' ||
-            categoryId === 'oldExpenses'
-        ){
-
-            const rawExpenseType =
-                categoryId === 'expenses'
-                    ? record.expense_type
-                    : record.donation_type;
-
-            const expenseType =
-                String(rawExpenseType || '')
-                    .trim()
-                    .toLowerCase();
-
-            /*
-             * Works with values such as:
-             * Chavithi Donations
-             * Chavithi Donation
-             * Chavithi
-             * చవితి
-             *
-             * and:
-             * Santharpana Donations
-             * Santharpana Donation
-             * Santharpana
-             * సంతర్పణ
-             */
-            const isChavithi =
-                expenseType.includes('chavithi') ||
-                expenseType.includes('చవితి');
-
-            const isSantharpana =
-                expenseType.includes('santharpana') ||
-                expenseType.includes('santharpana') ||
-                expenseType.includes('సంతర్పణ');
-
-            if(isChavithi){
-
-                chavithiExpenseCount++;
-
-                if(Number.isFinite(parsedAmount)){
-                    chavithiExpenseAmount += parsedAmount;
-                }
-            }
-            else if(isSantharpana){
-
-                santharpanaExpenseCount++;
-
-                if(Number.isFinite(parsedAmount)){
-                    santharpanaExpenseAmount += parsedAmount;
-                }
-            }
-        }
     });
 
     return {
         count:safeRecords.length,
         donors:safeRecords.length,
-        amount:amount,
-
-        chavithiExpenseCount:chavithiExpenseCount,
-        chavithiExpenseAmount:chavithiExpenseAmount,
-
-        santharpanaExpenseCount:santharpanaExpenseCount,
-        santharpanaExpenseAmount:santharpanaExpenseAmount
+        amount:amount
     };
 }
 
@@ -586,28 +540,22 @@ function renderPermanentAdminSummary(categoryId,summary){
     if(
         categoryId === 'chavithi' ||
         categoryId === 'santharpana' ||
-        categoryId === 'oldDonations'
+        categoryId === 'oldChavithiDonations' ||
+        categoryId === 'oldSantharpanaDonations'
     ){
         lines.innerHTML =
             `Donors : ${formatAdminCount(summary.donors)}<br>` +
             `Amount : ${formatAdminMoney(summary.amount)}`;
     }
     else if(
-        categoryId === 'expenses' ||
-        categoryId === 'oldExpenses'
+        categoryId === 'chavithiExpenses' ||
+        categoryId === 'santharpanaExpenses' ||
+        categoryId === 'oldChavithiExpenses' ||
+        categoryId === 'oldSantharpanaExpenses'
     ){
-        /*
-         * Do not combine Expenses into one total.
-         * Show Chavithi and Santharpana separately in the
-         * permanent summary card above the table.
-         */
         lines.innerHTML =
-            `Chavithi Expense : ${formatAdminMoney(
-                summary.chavithiExpenseAmount
-            )}<br>` +
-            `Santharpana Expense : ${formatAdminMoney(
-                summary.santharpanaExpenseAmount
-            )}`;
+            `Entries : ${formatAdminCount(summary.count)}<br>` +
+            `Amount : ${formatAdminMoney(summary.amount)}`;
     }
     else if(categoryId === 'events'){
         lines.textContent =
@@ -645,6 +593,79 @@ function showAdminSummaryError(categoryId){
     }
 }
 
+function filterAdminRecordsForCategory(records,categoryId){
+
+    const safeRecords =
+        Array.isArray(records) ? records : [];
+
+    let fieldName = '';
+    let expectedType = '';
+
+    if(categoryId === 'chavithiExpenses'){
+        fieldName = 'expense_type';
+        expectedType = 'chavithi';
+    }
+    else if(categoryId === 'santharpanaExpenses'){
+        fieldName = 'expense_type';
+        expectedType = 'santharpana';
+    }
+    else if(categoryId === 'oldChavithiExpenses'){
+        fieldName = 'donation_type';
+        expectedType = 'chavithi';
+    }
+    else if(categoryId === 'oldSantharpanaExpenses'){
+        fieldName = 'donation_type';
+        expectedType = 'santharpana';
+    }
+    else if(categoryId === 'oldChavithiDonations'){
+        fieldName = '__old_donation_type__';
+        expectedType = 'chavithi';
+    }
+    else if(categoryId === 'oldSantharpanaDonations'){
+        fieldName = '__old_donation_type__';
+        expectedType = 'santharpana';
+    }
+    else{
+        return safeRecords;
+    }
+
+    return safeRecords.filter(function(record){
+
+        /*
+         * Old donation rows may use different historical field names.
+         * Check all common possibilities without changing the database.
+         */
+        const rawValue =
+            fieldName === '__old_donation_type__'
+                ? (
+                    record?.donation_type ??
+                    record?.donation_category ??
+                    record?.category ??
+                    record?.type ??
+                    ''
+                )
+                : record?.[fieldName];
+
+        const value =
+            String(rawValue || '')
+                .trim()
+                .toLowerCase();
+
+        if(expectedType === 'chavithi'){
+            return (
+                value.includes('chavithi') ||
+                value.includes('చవితి')
+            );
+        }
+
+        return (
+            value.includes('santharpana') ||
+            value.includes('సంతర్పణ')
+        );
+    });
+}
+
+
 async function loadAllAdminSummaries(){
 
     if(!adminSupabase){
@@ -676,10 +697,16 @@ async function loadAllAdminSummaries(){
                     throw error;
                 }
 
+                const summaryRecords =
+                    filterAdminRecordsForCategory(
+                        data || [],
+                        category.id
+                    );
+
                 renderPermanentAdminSummary(
                     category.id,
                     calculateAdminSummary(
-                        data || [],
+                        summaryRecords,
                         category.id
                     )
                 );
@@ -1024,8 +1051,11 @@ adminSupabase
   },
   () => {
     loadAllAdminSummaries();
-    if(currentAdminCategory === "expenses"){
-      loadAdminCategoryData("expenses");
+    if(
+      currentAdminCategory === "chavithiExpenses" ||
+      currentAdminCategory === "santharpanaExpenses"
+    ){
+      loadAdminCategoryData(currentAdminCategory);
     }
   }
 )
@@ -1039,8 +1069,11 @@ adminSupabase
   },
   () => {
     loadAllAdminSummaries();
-    if(currentAdminCategory === "oldDonations"){
-      loadAdminCategoryData("oldDonations");
+    if(
+      currentAdminCategory === "oldChavithiDonations" ||
+      currentAdminCategory === "oldSantharpanaDonations"
+    ){
+      loadAdminCategoryData(currentAdminCategory);
     }
   }
 )
@@ -1054,8 +1087,11 @@ adminSupabase
   },
   () => {
     loadAllAdminSummaries();
-    if(currentAdminCategory === "oldExpenses"){
-      loadAdminCategoryData("oldExpenses");
+    if(
+      currentAdminCategory === "oldChavithiExpenses" ||
+      currentAdminCategory === "oldSantharpanaExpenses"
+    ){
+      loadAdminCategoryData(currentAdminCategory);
     }
   }
 )
@@ -1137,10 +1173,12 @@ const adminTableConfig = {
         ]
     },
 
-    expenses:{
+    chavithiExpenses:{
         table:'chavithi_expenses',
         bucket:'expenses-proff--up',
         pathColumn:'proof_file_path',
+        filterField:'expense_type',
+        filterType:'chavithi',
         columns:[
             { key:'id', label:'ID' },
             { key:'expense_description', label:'Description' },
@@ -1154,8 +1192,28 @@ const adminTableConfig = {
         ]
     },
 
-    oldDonations:{
+    santharpanaExpenses:{
+        table:'chavithi_expenses',
+        bucket:'expenses-proff--up',
+        pathColumn:'proof_file_path',
+        filterField:'expense_type',
+        filterType:'santharpana',
+        columns:[
+            { key:'id', label:'ID' },
+            { key:'expense_description', label:'Description' },
+            { key:'vendor_name', label:'Vendor' },
+            { key:'expense_type', label:'Expense Type' },
+            { key:'expense_amount', label:'Amount', money:true },
+            { key:'expense_date', label:'Expense Date', date:true },
+            { key:'proof_public_url', label:'Proof', link:true },
+            { key:'created_by_name', label:'Created By' },
+            { key:'created_at', label:'Created At', dateTime:true }
+        ]
+    },
+
+    oldChavithiDonations:{
         table:'olddonation',
+        filterType:'chavithi',
         columns:[
             { key:'id', label:'ID' },
             { key:'name', label:'Name' },
@@ -1168,10 +1226,48 @@ const adminTableConfig = {
         ]
     },
 
-    oldExpenses:{
+    oldSantharpanaDonations:{
+        table:'olddonation',
+        filterType:'santharpana',
+        columns:[
+            { key:'id', label:'ID' },
+            { key:'name', label:'Name' },
+            { key:'mobile_number', label:'Mobile' },
+            { key:'amount', label:'Amount', money:true },
+            { key:'donation_date', label:'Donation Date', date:true },
+            { key:'payment_type', label:'Payment' },
+            { key:'additional_information', label:'Additional Info' },
+            { key:'created_at', label:'Created At', dateTime:true }
+        ]
+    },
+
+    oldChavithiExpenses:{
         table:'old_expenses',
         bucket:'expenses-proff',
         pathColumn:'proof_file_path',
+        filterField:'donation_type',
+        filterType:'chavithi',
+        columns:[
+            { key:'id', label:'ID' },
+            { key:'donation_type', label:'Donation Type' },
+            { key:'expense_description', label:'Description' },
+            { key:'vendor_name', label:'Vendor' },
+            { key:'expense_amount', label:'Amount', money:true },
+            { key:'expense_date', label:'Expense Date', date:true },
+            { key:'payment_type', label:'Payment' },
+            { key:'proof_public_url', label:'Proof', link:true },
+            { key:'additional_information', label:'Additional Info' },
+            { key:'created_by_name', label:'Created By' },
+            { key:'created_at', label:'Created At', dateTime:true }
+        ]
+    },
+
+    oldSantharpanaExpenses:{
+        table:'old_expenses',
+        bucket:'expenses-proff',
+        pathColumn:'proof_file_path',
+        filterField:'donation_type',
+        filterType:'santharpana',
         columns:[
             { key:'id', label:'ID' },
             { key:'donation_type', label:'Donation Type' },
@@ -4454,7 +4550,11 @@ async function loadAdminCategoryData(categoryId){
         }
 
 
-        const records = data || [];
+        const records =
+            filterAdminRecordsForCategory(
+                data || [],
+                categoryId
+            );
 
 
 
